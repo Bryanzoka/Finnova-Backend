@@ -18,7 +18,7 @@ namespace BankAccountAPI.Repository
 
         public async Task<List<BankAccountModel>> SearchAllAccounts()
         {
-           return await _dbContext.BankAccount.ToListAsync(); 
+           return await _dbContext.BankAccount.Include(x => x.BankClient).ToListAsync(); 
         }
 
         public async Task<BankAccountModel> SearchAccountById(int id)

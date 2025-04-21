@@ -12,10 +12,12 @@ namespace BankAccountAPI.Services
     public class AccountServices : IAccountServices
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IClientServices _clientServices;
 
-        public AccountServices(IAccountRepository accountRepository)
+        public AccountServices(IAccountRepository accountRepository, IClientServices clientServices)
         {
             _accountRepository = accountRepository;
+            _clientServices = clientServices;
         }
         public async Task<List<BankAccountModel>> SearchAllAccounts()
         {
@@ -33,7 +35,7 @@ namespace BankAccountAPI.Services
         public async Task<BankAccountModel> AddAccount(BankAccountModel account)
         {
             ArgumentNullException.ThrowIfNull(account);
-            if (account.CPF.Length != 11 || !account.CPF.All(char.IsDigit)) throw new ArgumentException("CPF inválido");
+            if(await _clientServices.SearchClientByCPF(account.CPF) == null) throw new KeyNotFoundException("Cliente não encontrado com o CPF informado");
             if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings) throw new Exception("Tipo de conta inválido");
             return await _accountRepository.AddAccount(account);
         }
