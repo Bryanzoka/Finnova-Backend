@@ -17,6 +17,14 @@ namespace BankAccountAPI.Data.Map
             builder.Property(x => x.CPF).IsRequired().HasMaxLength(11);
             builder.Property(x => x.AccountType).IsRequired();
             builder.Property(x => x.Balance).IsRequired();
+            builder.HasOne(x => x.BankClient);
+            
+            builder
+                .HasOne(x => x.BankClient)
+                .WithMany() 
+                .HasForeignKey(x => x.CPF)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
