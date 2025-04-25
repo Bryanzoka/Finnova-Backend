@@ -37,9 +37,15 @@ namespace BankAccountAPI.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         public async Task<ActionResult<BankAccountDTO>> AddAccount([FromBody] BankAccountDTO newBankAccountDTO)
         {
             BankAccountModel newBankAccount = BankAccountModel.ToModel(newBankAccountDTO);
+=======
+        public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
+        {
+            BankAccountModel newBankAccount = BankAccountModel.CreationDTOToModel(newBankAccountDTO);
+>>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
             BankAccountModel bankAccount = await _accountServices.AddAccount(newBankAccount);
             return Ok(BankAccountDTO.ToDTO(bankAccount));
         }

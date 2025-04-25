@@ -46,6 +46,18 @@ namespace BankAccountAPI.Models
             };
         }
 
+<<<<<<< HEAD
+=======
+        public static BankAccountModel CreationDTOToModel(CreateAccountDTO dto)
+        {
+            return new BankAccountModel
+            {
+                CPF = dto.CPF,
+                AccountType = dto.AccountType,
+            };
+        }
+
+>>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
         public void Deposit(decimal amount)
         {
             Balance += amount;
