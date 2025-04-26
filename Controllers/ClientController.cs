@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using BankAccountAPI.Repository;
 using BankAccountAPI.Models;
 using BankAccountAPI.Services.Interface;
-<<<<<<< HEAD
-=======
 using BankAccountAPI.Models.DTOs;
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
 
 namespace BankAccountAPI.Controllers
 {
@@ -46,15 +43,9 @@ namespace BankAccountAPI.Controllers
         }
 
         [HttpPut("{cpf}")]
-<<<<<<< HEAD
-        public async Task<ActionResult<BankClientModel>> UpdateClient([FromBody] BankClientModel bankClientModel, string cpf)
-        {
-            BankClientModel bankClient = await _clientServices.UpdateClient(bankClientModel, cpf);
-=======
         public async Task<ActionResult<BankClientModel>> UpdateClient([FromBody] UpdateClientDTO bankClientDTO, string cpf)
         {
             BankClientModel bankClient = await _clientServices.UpdateClient(BankClientModel.ToModelUpdate(bankClientDTO), cpf);
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
             return Ok(bankClient);
         }
 

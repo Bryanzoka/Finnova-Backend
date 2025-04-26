@@ -4,10 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-<<<<<<< HEAD
-=======
 using BankAccountAPI.Models.DTOs;
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
 
 namespace BankAccountAPI.Models
 {
@@ -37,8 +34,6 @@ namespace BankAccountAPI.Models
             ClientEmail = clientEmail;
             ClientTel = clientTel;
         }
-<<<<<<< HEAD
-=======
 
         public static BankClientModel ToModelUpdate(UpdateClientDTO updateClientDTO)
         {
@@ -49,6 +44,5 @@ namespace BankAccountAPI.Models
                 ClientTel = updateClientDTO.ClientTel
             };
         }
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
     }
 }

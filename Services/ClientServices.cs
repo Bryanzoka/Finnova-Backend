@@ -41,26 +41,17 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> UpdateClient(BankClientModel client, string cpf)
         {
-<<<<<<< HEAD
-            if(SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
-            ArgumentNullException.ThrowIfNull(client);
-=======
             if(await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
             ArgumentNullException.ThrowIfNull(client);
             if(string.IsNullOrEmpty(client.ClientName)) throw new ArgumentException("Nome inválido");
             MailAddress invalidEmail = new MailAddress(client.ClientEmail) ?? throw new FormatException("Email inválido");
             if(client.ClientTel.Length < 11 || client.ClientTel.Length > 13 || !client.ClientTel.All(char.IsDigit)) throw new FormatException("Telefone inválido");
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
             return await _clientRepository.UpdateClient(client, cpf);
         }
 
         public async Task<bool> DeleteClient(string cpf)
         {
-<<<<<<< HEAD
-            if(SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
-=======
             if(await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
->>>>>>> 4617cd4 (Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros)
             return await _clientRepository.DeleteClient(cpf);
         }
     }
