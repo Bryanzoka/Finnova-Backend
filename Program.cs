@@ -25,6 +25,7 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IClientServices, ClientServices>();
 builder.Services.AddScoped<IAccountServices, AccountServices>();
+builder.Services.AddHostedService<SavingsYieldServices>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

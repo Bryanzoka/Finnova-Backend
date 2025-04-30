@@ -64,5 +64,10 @@ namespace BankAccountAPI.Models
         {
             Balance -= amount;
         }
+
+        public void YieldAccount(decimal yield)
+        {
+            Balance += yield;
+        }
     }
 }
