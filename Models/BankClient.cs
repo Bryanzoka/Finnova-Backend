@@ -16,6 +16,9 @@ namespace BankAccountAPI.Models
         public string ClientName { get; private set; }
         public string ClientEmail { get; private set; }
         public string ClientTel { get; private set; }
+        public string Password { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; private set; }
 
         public BankClientModel() {}
 

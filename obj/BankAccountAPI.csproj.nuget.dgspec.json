@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\00001\\Downloads\\BankAccountAPI-main\\BankAccountAPI.csproj": {}
+    "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\BankAccountAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\00001\\Downloads\\BankAccountAPI-main\\BankAccountAPI.csproj": {
+    "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\BankAccountAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\00001\\Downloads\\BankAccountAPI-main\\BankAccountAPI.csproj",
+        "projectUniqueName": "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\BankAccountAPI.csproj",
         "projectName": "BankAccountAPI",
-        "projectPath": "C:\\Users\\00001\\Downloads\\BankAccountAPI-main\\BankAccountAPI.csproj",
-        "packagesPath": "C:\\Users\\00001\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\00001\\Downloads\\BankAccountAPI-main\\obj\\",
+        "projectPath": "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\BankAccountAPI.csproj",
+        "packagesPath": "C:\\Users\\BryanSales\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\00001\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\BryanSales\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -44,6 +44,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.2, )"

@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using BankAccountAPI.Models.DTOs;
 using BankAccountAPI.Controllers;
+using Microsoft.AspNetCore.Identity;
 
 namespace BankAccountAPI.Models
 {
@@ -22,6 +23,9 @@ namespace BankAccountAPI.Models
         public string CPF { get; private set; }
         public EnumAccountType AccountType { get; private set; } 
         public decimal Balance { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; private set; }
+        public DateTime LastTransactionAt { get; private set; }
         public virtual BankClientModel BankClient { get; private set; } 
 
         public BankAccountModel() {}
