@@ -1,0 +1,7 @@
+[33m23f730f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m t checkout t add . git add . git add . git add . git add . git add . git add . git add . git add . git add . git add . git add . Adicionando novos DTOs para proteger a saída e entrada de dados e corrigindo erros
+[33m3b64512[m Merge branch 'WorkBranch'
+[33m2747bc1[m[33m ([m[1;31morigin/WorkBranch[m[33m)[m Adicionando alterações feitas em BankAccountAPI e validações por CPF
+[33m882c8c0[m Adicionando ligação de bankAccount com bankClient, ajustando mapeamento e validações por CPF
+[33mafcc2c8[m Adicionando ligação de bankAccount com bankClient, ajustando mapeamento e validações por CPF
+[33m7d136bd[m Adicionando BankAccountAPI no repositŕoio
+[33m64ab118[m Adicionando BankAccountAPI no repositório

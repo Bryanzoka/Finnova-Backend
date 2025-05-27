@@ -23,12 +23,13 @@ namespace BankAccountAPI.Models
         public BankClientModel() {}
 
         [JsonConstructor]
-        public BankClientModel (string cpf, string clientName, string clientEmail, string clientTel)
+        public BankClientModel(string cpf, string clientName, string clientEmail, string clientTel, string password)
         {
             CPF = cpf;
             ClientName = clientName;
             ClientEmail = clientEmail;
             ClientTel = clientTel;
+            Password = password;
         }
 
         public void UpdateClient(string clientName, string clientEmail, string clientTel)
