@@ -9,11 +9,11 @@ using BankAccountAPI.Repository;
 
 namespace BankAccountAPI.Services
 {
-    public class ClientServices : IClientServices
+    public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
 
-        public ClientServices(IClientRepository clientRepository)
+        public ClientService(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
         }
@@ -49,9 +49,16 @@ namespace BankAccountAPI.Services
             return await _clientRepository.UpdateClient(client, cpf);
         }
 
+        public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
+        {
+            BankClientModel client = await SearchClientByCPF(cpf);
+            if (client == null || client.Password != password) return null;
+            return client;
+        }
+
         public async Task<bool> DeleteClient(string cpf)
         {
-            if(await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
+            if (await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
             return await _clientRepository.DeleteClient(cpf);
         }
     }

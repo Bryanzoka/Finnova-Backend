@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "XU/ShL7dm4U=",
+  "dgSpecHash": "CoB8KpZgCNA=",
   "success": true,
   "projectFilePath": "C:\\Users\\BryanSales\\Downloads\\BankAccountAPI\\BankAccountAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BryanSales\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
-    "C:\\Users\\BryanSales\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.4\\microsoft.aspnetcore.authentication.jwtbearer.9.0.4.nupkg.sha512",
+    "C:\\Users\\BryanSales\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.5\\microsoft.aspnetcore.authentication.jwtbearer.9.0.5.nupkg.sha512",
     "C:\\Users\\BryanSales\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.2\\microsoft.aspnetcore.openapi.9.0.2.nupkg.sha512",
     "C:\\Users\\BryanSales\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\BryanSales\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",

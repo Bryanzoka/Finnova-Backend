@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "BankAccountAPI/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.4",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
           "Microsoft.AspNetCore.OpenApi": "9.0.2",
           "Microsoft.EntityFrameworkCore": "8.0.2",
           "Microsoft.EntityFrameworkCore.Design": "8.0.2",
@@ -29,14 +29,14 @@
           }
         }
       },
-      "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.4": {
+      "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.5": {
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.0.1"
         },
         "runtime": {
           "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
-            "assemblyVersion": "9.0.4.0",
-            "fileVersion": "9.0.425.16403"
+            "assemblyVersion": "9.0.5.0",
+            "fileVersion": "9.0.525.22904"
           }
         }
       },
@@ -655,12 +655,12 @@
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.4": {
+    "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0HgfWPfnjlzWFbW4pw6FYNuIMV8obVU+MUkiZ33g4UOpvZcmdWzdayfheKPZ5+EUly8SvfgW0dJwwIrW4IVLZQ==",
-      "path": "microsoft.aspnetcore.authentication.jwtbearer/9.0.4",
-      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.9.0.4.nupkg.sha512"
+      "sha512": "sha512-8J04KPX5NCo6j5AjY/rgeLTceMBJ8Sq4k+YNxN/7hCrbCH1iwHVw7VGGvlCscj615ewMX3jYDmxxLdutbSPOcA==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/9.0.5",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.9.0.5.nupkg.sha512"
     },
     "Microsoft.AspNetCore.OpenApi/9.0.2": {
       "type": "package",

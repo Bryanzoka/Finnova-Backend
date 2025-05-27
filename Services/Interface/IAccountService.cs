@@ -6,7 +6,7 @@ using BankAccountAPI.Models;
 
 namespace BankAccountAPI.Services.Interface
 {
-    public interface IAccountServices
+    public interface IAccountService
     {
         Task<List<BankAccountModel>> SearchAllAccounts();
         Task<BankAccountModel> SearchAccountById(int id);

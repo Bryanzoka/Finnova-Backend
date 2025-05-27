@@ -14,9 +14,9 @@ namespace BankAccountAPI.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountServices _accountServices;
+        private readonly IAccountService _accountServices;
 
-        public AccountController(IAccountServices accountServices)
+        public AccountController(IAccountService accountServices)
         {
             _accountServices = accountServices;
         }

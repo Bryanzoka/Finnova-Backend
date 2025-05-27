@@ -9,12 +9,12 @@ using BankAccountAPI.Enums;
 
 namespace BankAccountAPI.Services
 {
-    public class AccountServices : IAccountServices
+    public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
-        private readonly IClientServices _clientServices;
+        private readonly IClientService _clientServices;
 
-        public AccountServices(IAccountRepository accountRepository, IClientServices clientServices)
+        public AccountService(IAccountRepository accountRepository, IClientService clientServices)
         {
             _accountRepository = accountRepository;
             _clientServices = clientServices;

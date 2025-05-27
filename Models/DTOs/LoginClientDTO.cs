@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BankAccountAPI.Models.DTOs
 {
-    public class LoginClientDTO
+    public record LoginClientDTO
     {
         public string CPF { get; set; }
         public string Password { get; set; }

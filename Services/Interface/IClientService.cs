@@ -6,8 +6,9 @@ using BankAccountAPI.Models;
 
 namespace BankAccountAPI.Services.Interface
 {
-    public interface IClientServices
+    public interface IClientService
     {
+        Task<BankClientModel> ValidateCredentials(string cpf, string password);
         Task<List<BankClientModel>> SearchAllClients();
         Task<BankClientModel> SearchClientByCPF(string cpf);
         Task<BankClientModel> AddClient(BankClientModel client);  

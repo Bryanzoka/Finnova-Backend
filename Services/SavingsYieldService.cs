@@ -7,13 +7,13 @@ using BankAccountAPI.Enums;
 
 namespace BankAccountAPI.Services
 {
-    public class SavingsYieldServices : IHostedService, IDisposable
+    public class SavingsYieldService : IHostedService, IDisposable
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private Timer _timer;
         private const decimal YieldRate = 0.02m;
 
-        public SavingsYieldServices(IServiceScopeFactory scopeFactory)
+        public SavingsYieldService(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
         }
