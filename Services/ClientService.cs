@@ -31,21 +31,11 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> AddClient(BankClientModel client)
         {
-            ArgumentNullException.ThrowIfNull(client);
-            if(string.IsNullOrEmpty(client.ClientName)) throw new ArgumentNullException("Nome inválido");
-            if(client.CPF.Length != 11 || !client.CPF.All(char.IsDigit)) throw new ArgumentException("CPF inválido");
-            MailAddress invalidEmail = new MailAddress(client.ClientEmail) ?? throw new FormatException("Email inválido");
-            if(client.ClientTel.Length < 11 || client.ClientTel.Length > 13 || !client.ClientTel.All(char.IsDigit)) throw new FormatException("Telefone inválido");
             return await _clientRepository.AddClient(client);
         }
 
         public async Task<BankClientModel> UpdateClient(BankClientModel client, string cpf)
         {
-            if(await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
-            ArgumentNullException.ThrowIfNull(client);
-            if(string.IsNullOrEmpty(client.ClientName)) throw new ArgumentException("Nome inválido");
-            MailAddress invalidEmail = new MailAddress(client.ClientEmail) ?? throw new FormatException("Email inválido");
-            if(client.ClientTel.Length < 11 || client.ClientTel.Length > 13 || !client.ClientTel.All(char.IsDigit)) throw new FormatException("Telefone inválido");
             return await _clientRepository.UpdateClient(client, cpf);
         }
 

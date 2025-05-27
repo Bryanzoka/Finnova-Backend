@@ -7,9 +7,11 @@ using BankAccountAPI.Repository;
 using BankAccountAPI.Models;
 using BankAccountAPI.Models.DTOs;
 using BankAccountAPI.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankAccountAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase

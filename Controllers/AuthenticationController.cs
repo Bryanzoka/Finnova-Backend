@@ -27,7 +27,7 @@ namespace BankAccountAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginClientDTO loginClientDTO)
         {
             var client = await _clientService.ValidateCredentials(loginClientDTO.CPF, loginClientDTO.Password);
-            if (client == null) return Unauthorized();
+            if (client == null) return Unauthorized("Usuário não encontrado");
             var token = _tokenService.GenerateToken(client);
             return Ok(token);
         }

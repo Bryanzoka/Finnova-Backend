@@ -6,7 +6,7 @@ using BankAccountAPI.Models;
 
 namespace BankAccountAPI.Models.DTOs
 {
-    public class UpdateClientDTO
+    public class BankClientDTO
     {
         public string ClientName { get; set; }
         public string ClientEmail { get; set; }

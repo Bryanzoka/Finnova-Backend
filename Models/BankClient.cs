@@ -11,13 +11,28 @@ namespace BankAccountAPI.Models
     public class BankClientModel
     {
         [Key]
-        [Required]
+        [Required(ErrorMessage = "CPF é obrigatório")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF deve conter 11 dígitos")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF só deve conter números")]
         public string CPF { get; private set; }
+
+        [Required(ErrorMessage = "Nome é obrigatório")]
+        [StringLength(100, ErrorMessage = "O nome inserido é muito longo")]
         public string ClientName { get; private set; }
+
+        [Required(ErrorMessage = "Email é obrigatório")]
+        [EmailAddress(ErrorMessage = "Formato de email inválido")]
         public string ClientEmail { get; private set; }
+
+        [Required(ErrorMessage = "Número de telefone é obrigatório")]
+        [StringLength(13, MinimumLength = 11, ErrorMessage = "O número de telefone deve conter entre 11 a 13 dígitos")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "O número de telefone deve conter apenas números")]
         public string ClientTel { get; private set; }
+
+        [Required(ErrorMessage = "Senha é obrigatória")]
+        [MinLength(8, ErrorMessage = "A senha deve conter no mínimo 8 caracteres")]
         public string Password { get; private set; }
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
         public BankClientModel() {}
@@ -30,16 +45,18 @@ namespace BankAccountAPI.Models
             ClientEmail = clientEmail;
             ClientTel = clientTel;
             Password = password;
+            CreatedAt = DateTime.Now;
         }
 
-        public void UpdateClient(string clientName, string clientEmail, string clientTel)
+        public void UpdateClient(string clientName, string clientEmail, string clientTel, DateTime updateDateTime)
         {
             ClientName = clientName;
             ClientEmail = clientEmail;
             ClientTel = clientTel;
+            UpdatedAt = updateDateTime;
         }
 
-        public static BankClientModel ToModelUpdate(UpdateClientDTO updateClientDTO)
+        public static BankClientModel ToModelUpdate(BankClientDTO updateClientDTO)
         {
             return new BankClientModel
             {

@@ -8,6 +8,7 @@ using BankAccountAPI.Models;
 using BankAccountAPI.Services.Interface;
 using BankAccountAPI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BankAccountAPI.Controllers
 {
@@ -45,8 +46,15 @@ namespace BankAccountAPI.Controllers
         }
 
         [HttpPut("{cpf}")]
-        public async Task<ActionResult<BankClientModel>> UpdateClient([FromBody] UpdateClientDTO bankClientDTO, string cpf)
+        public async Task<ActionResult<BankClientModel>> UpdateClient([FromBody] BankClientDTO bankClientDTO, string cpf)
         {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (cpf != clientCpf)
+                return Unauthorized("Não autorizado");
             BankClientModel bankClient = await _clientServices.UpdateClient(BankClientModel.ToModelUpdate(bankClientDTO), cpf);
             return Ok(bankClient);
         }
@@ -54,6 +62,7 @@ namespace BankAccountAPI.Controllers
         [HttpDelete("{cpf}")]
         public async Task<ActionResult<BankClientModel>> DeleteClient(string cpf)
         {
+            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             bool clientDeleted = await _clientServices.DeleteClient(cpf);
             return Ok(clientDeleted);
         }
