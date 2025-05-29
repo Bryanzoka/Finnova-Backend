@@ -35,7 +35,7 @@ namespace BankAccountAPI.Models
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        public BankClientModel() {}
+        public BankClientModel() { }
 
         [JsonConstructor]
         public BankClientModel(string cpf, string clientName, string clientEmail, string clientTel, string password)
@@ -48,21 +48,22 @@ namespace BankAccountAPI.Models
             CreatedAt = DateTime.Now;
         }
 
-        public void UpdateClient(string clientName, string clientEmail, string clientTel, DateTime updateDateTime)
+        public void UpdateClient(string clientName, string clientEmail, string clientTel, string password, DateTime updateDateTime)
         {
             ClientName = clientName;
             ClientEmail = clientEmail;
             ClientTel = clientTel;
+            Password = password;
             UpdatedAt = updateDateTime;
         }
 
-        public static BankClientModel ToModelUpdate(BankClientDTO updateClientDTO)
+        public static BankClientModel ToModel(BankClientDTO bankClientDTO)
         {
             return new BankClientModel
             {
-                ClientName = updateClientDTO.ClientName,
-                ClientEmail = updateClientDTO.ClientEmail,
-                ClientTel = updateClientDTO.ClientTel
+                ClientName = bankClientDTO.ClientName,
+                ClientEmail = bankClientDTO.ClientEmail,
+                ClientTel = bankClientDTO.ClientTel
             };
         }
     }

@@ -8,12 +8,12 @@ using BankAccountAPI.Models;
 using BankAccountAPI.Models.DTOs;
 using BankAccountAPI.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BankAccountAPI.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/account")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountServices;
@@ -31,10 +31,17 @@ namespace BankAccountAPI.Controllers
             return Ok(bankAccountsDTO);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<BankAccountDTO>> SearchAccountById(int id)
         {
+            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             BankAccountModel bankAccountById = await _accountServices.SearchAccountById(id);
+            if (bankAccountById.CPF != clientCpf)
+            {
+                return Unauthorized("Ação não autorizada");
+            }
+
             return Ok(BankAccountDTO.ToDTO(bankAccountById));
         }
 
@@ -46,22 +53,22 @@ namespace BankAccountAPI.Controllers
             return Ok(BankAccountDTO.ToDTO(bankAccount));
         }
 
-        [HttpPatch("{id}/Deposit")]
-        public async Task<ActionResult<BankAccountDTO>> DepositBalance(decimal amount, int id)
+        [HttpPatch("deposit/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromForm] decimal amount, int id)
         {
             BankAccountModel bankAccount = await _accountServices.DepositBalance(amount, id);
             return Ok(BankAccountDTO.ToDTO(bankAccount));
         }
 
-        [HttpPatch("{id}/Withdraw")]
-        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance(decimal amount, int id)
+        [HttpPatch("withdraw/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromForm] decimal amount, int id)
         {
             BankAccountModel bankAccount = await _accountServices.WithdrawBalance(amount, id);
             return Ok(BankAccountDTO.ToDTO(bankAccount));
         }
 
-        [HttpPatch("Transfer")]
-        public async Task<ActionResult<BankAccountDTO>> TransferBalance(decimal amount, int accountId, int recipientId)
+        [HttpPatch("transfer")]
+        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromForm] decimal amount, int accountId, int recipientId)
         {
             BankAccountModel bankAccount = await _accountServices.TransferBalance(amount, accountId, recipientId);
             return Ok(BankAccountDTO.ToDTO(bankAccount));

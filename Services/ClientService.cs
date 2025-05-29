@@ -6,6 +6,7 @@ using System.Net.Mail;
 using BankAccountAPI.Models;
 using BankAccountAPI.Services.Interface;
 using BankAccountAPI.Repository;
+using BankAccountAPI.Models.DTOs;
 
 namespace BankAccountAPI.Services
 {
@@ -23,10 +24,13 @@ namespace BankAccountAPI.Services
             return await _clientRepository.SearchAllClients();
         }
 
-        public async Task<BankClientModel> SearchClientByCPF(string cpf)
+        public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
-            if(cpf.Length != 11 || !cpf.All(char.IsDigit)) throw new ArgumentException("CPF inválido");
-            return await _clientRepository.SearchClientByCPF(cpf);
+            if(cpf.Length != 11 || !cpf.All(char.IsDigit))
+                return null;
+
+            var client = await _clientRepository.SearchClientByCPF(cpf);
+            return BankClientDTO.ToDTO(client);
         }
 
         public async Task<BankClientModel> AddClient(BankClientModel client)
@@ -34,15 +38,31 @@ namespace BankAccountAPI.Services
             return await _clientRepository.AddClient(client);
         }
 
-        public async Task<BankClientModel> UpdateClient(BankClientModel client, string cpf)
+        public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
         {
-            return await _clientRepository.UpdateClient(client, cpf);
+            if (cpf.Length != 11 || !cpf.All(char.IsDigit)) throw new ArgumentException("CPF inválido");
+            var updatedClient = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Conta com o CPF informado não encontrado");
+            updatedClient.UpdateClient(
+                client.ClientName ?? updatedClient.ClientName,
+                client.ClientEmail ?? updatedClient.ClientEmail,
+                client.ClientTel ?? updatedClient.ClientTel,
+                client.Password ?? updatedClient.Password,
+                DateTime.Now
+            );
+
+            await _clientRepository.UpdateClient(updatedClient, cpf);
+            return BankClientDTO.ToDTO(updatedClient);
         }
 
         public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
         {
-            BankClientModel client = await SearchClientByCPF(cpf);
-            if (client == null || client.Password != password) return null;
+            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
+                throw new ArgumentException("CPF inválido");
+
+            var client = await _clientRepository.SearchClientByCPF(cpf);
+            if (client == null || client.Password != password)
+                throw new UnauthorizedAccessException("Credenciais inválidas");
+
             return client;
         }
 

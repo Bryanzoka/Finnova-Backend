@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BankAccountAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/authentication")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IClientService _clientService;
@@ -26,10 +26,20 @@ namespace BankAccountAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginClientDTO loginClientDTO)
         {
-            var client = await _clientService.ValidateCredentials(loginClientDTO.CPF, loginClientDTO.Password);
-            if (client == null) return Unauthorized("Usuário não encontrado");
-            var token = _tokenService.GenerateToken(client);
-            return Ok(token);
+            try
+            {
+                var client = await _clientService.ValidateCredentials(loginClientDTO.CPF, loginClientDTO.Password);
+                var token = _tokenService.GenerateToken(client);
+                return Ok(token);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

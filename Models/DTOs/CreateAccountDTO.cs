@@ -7,7 +7,7 @@ using BankAccountAPI.Models;
 
 namespace BankAccountAPI.Models.DTOs
 {
-    public class CreateAccountDTO
+    public record CreateAccountDTO
     {
         public string CPF { get; set; }
         public EnumAccountType AccountType { get; set; }

@@ -7,7 +7,7 @@ using BankAccountAPI.Models;
 
 namespace BankAccountAPI.Models.DTOs
 {
-    public class BankAccountDTO
+    public record BankAccountDTO
     {
         public int Id { get; set; }
         public string CPF { get; set; }

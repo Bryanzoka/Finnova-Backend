@@ -35,7 +35,8 @@ namespace BankAccountAPI.Data.Map
             builder
                 .Property(x => x.Balance)
                 .IsRequired()
-                .HasColumnName("account_balance");
+                .HasColumnName("account_balance")
+                .HasColumnType("DECIMAL(10,2)");
 
             builder
                 .Property(x => x.CreatedAt)
