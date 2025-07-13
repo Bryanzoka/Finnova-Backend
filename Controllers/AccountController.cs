@@ -9,6 +9,7 @@ using BankAccountAPI.Models.DTOs;
 using BankAccountAPI.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.ComponentModel;
 
 namespace BankAccountAPI.Controllers
 {
@@ -24,11 +25,11 @@ namespace BankAccountAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BankAccountDTO>>> SearchAllClients()
+        public async Task<ActionResult<List<BankAccountModel>>> SearchAllClients()
         {
             List<BankAccountModel> bankAccounts = await _accountServices.SearchAllAccounts();
             List<BankAccountDTO> bankAccountsDTO = bankAccounts.Select(x => BankAccountDTO.ToDTO(x)).ToList();
-            return Ok(bankAccountsDTO);
+            return Ok(bankAccounts);
         }
 
         [Authorize]
@@ -36,28 +37,70 @@ namespace BankAccountAPI.Controllers
         public async Task<ActionResult<BankAccountDTO>> SearchAccountById(int id)
         {
             var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            BankAccountModel bankAccountById = await _accountServices.SearchAccountById(id);
-            if (bankAccountById.CPF != clientCpf)
-            {
-                return Unauthorized("Ação não autorizada");
-            }
 
-            return Ok(BankAccountDTO.ToDTO(bankAccountById));
+            try
+            {
+                var bankAccountById = await _accountServices.SearchAccountById(id);
+                if (bankAccountById.CPF != clientCpf)
+                {
+                    return Unauthorized("Invalid operation");
+                }
+
+                return Ok(bankAccountById);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }      
         }
 
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
         {
-            BankAccountModel newBankAccount = BankAccountModel.CreationDTOToModel(newBankAccountDTO);
-            BankAccountModel bankAccount = await _accountServices.AddAccount(newBankAccount);
-            return Ok(BankAccountDTO.ToDTO(bankAccount));
+            try
+            {
+                var bankAccount = await _accountServices.AddAccount(newBankAccountDTO);
+                return Ok(BankAccountDTO.ToDTO(bankAccount));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
+        [Authorize]
         [HttpPatch("deposit/{id}")]
         public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromForm] decimal amount, int id)
         {
-            BankAccountModel bankAccount = await _accountServices.DepositBalance(amount, id);
-            return Ok(BankAccountDTO.ToDTO(bankAccount));
+            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var account = await _accountServices.SearchAccountById(id);
+
+            if (clientCpf != account.CPF)
+            {
+                return Unauthorized("Invalid operation");
+            }
+
+            try
+            {
+                account = await _accountServices.DepositBalance(amount, id);
+                return account;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPatch("withdraw/{id}")]

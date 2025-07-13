@@ -11,26 +11,26 @@ namespace BankAccountAPI.Models
     public class BankClientModel
     {
         [Key]
-        [Required(ErrorMessage = "CPF é obrigatório")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF deve conter 11 dígitos")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF só deve conter números")]
+        [Required(ErrorMessage = "CPF is required")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF must contain only numbers")]
         public string CPF { get; private set; }
 
-        [Required(ErrorMessage = "Nome é obrigatório")]
-        [StringLength(100, ErrorMessage = "O nome inserido é muito longo")]
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, ErrorMessage = "The entered name is to long")]
         public string ClientName { get; private set; }
 
-        [Required(ErrorMessage = "Email é obrigatório")]
-        [EmailAddress(ErrorMessage = "Formato de email inválido")]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string ClientEmail { get; private set; }
 
-        [Required(ErrorMessage = "Número de telefone é obrigatório")]
-        [StringLength(13, MinimumLength = 11, ErrorMessage = "O número de telefone deve conter entre 11 a 13 dígitos")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "O número de telefone deve conter apenas números")]
+        [Required(ErrorMessage = "Phone number is required")]
+        [StringLength(13, MinimumLength = 11, ErrorMessage = "Phone number must be between 11 and 13 digits long")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only numbers")]
         public string ClientTel { get; private set; }
 
-        [Required(ErrorMessage = "Senha é obrigatória")]
-        [MinLength(8, ErrorMessage = "A senha deve conter no mínimo 8 caracteres")]
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }

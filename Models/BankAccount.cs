@@ -17,15 +17,20 @@ namespace BankAccountAPI.Models
         [Key]
         public int AccountId { get; private set; }
 
-        [Required]
-        [MaxLength(11)]
-        [ForeignKey("BankClient")]
+        [Required(ErrorMessage = "CPF is required")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF must contain only numbers")]
         public string CPF { get; private set; }
+
+        [Required(ErrorMessage = "Account type is required")]
+        [EnumDataType(typeof(EnumAccountType), ErrorMessage = "Invalid account type")]
         public EnumAccountType AccountType { get; private set; } 
         public decimal Balance { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; }
         public DateTime LastTransactionAt { get; private set; }
+
+        [Required(ErrorMessage = "An account must be linked to user")]
         public virtual BankClientModel BankClient { get; private set; } 
 
         public BankAccountModel() {}

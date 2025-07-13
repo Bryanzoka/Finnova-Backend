@@ -6,6 +6,9 @@ using BankAccountAPI.Models;
 using BankAccountAPI.Services.Interface;
 using BankAccountAPI.Repository;
 using BankAccountAPI.Enums;
+using BankAccountAPI.Models.DTOs;
+using System.ComponentModel;
+using Microsoft.VisualBasic;
 
 namespace BankAccountAPI.Services
 {
@@ -24,33 +27,57 @@ namespace BankAccountAPI.Services
             return await _accountRepository.SearchAllAccounts();
         }
 
-        public async Task<BankAccountModel> SearchAccountById(int id)
+        public async Task<BankAccountDTO> SearchAccountById(int id)
         {
-            if(id <= 0) throw new ArgumentException($"O ID: {id} é inválido");
+            if (id <= 0)
+            {
+                throw new ArgumentException($"O ID: {id} é inválido");
+            }
 
             BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Conta não encontrada");
-            return accountById;
+
+            return BankAccountDTO.ToDTO(accountById);
         }
 
-        public async Task<BankAccountModel> AddAccount(BankAccountModel account)
+        public async Task<BankAccountModel> AddAccount(CreateAccountDTO account)
         {
-            ArgumentNullException.ThrowIfNull(account);
-            if(await _clientServices.SearchClientByCPF(account.CPF) == null) throw new KeyNotFoundException("Cliente não encontrado com o CPF informado");
-            if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings) throw new Exception("Tipo de conta inválido");
-            return await _accountRepository.AddAccount(account);
+            if (string.IsNullOrEmpty(account.CPF) || !account.CPF.All(char.IsDigit))
+            {
+                throw new ArgumentException("CPF inválido");
+            }
+
+            if (await _clientServices.SearchClientByCPF(account.CPF) == null)
+            {
+                throw new KeyNotFoundException("Cliente com CPF informado não encontrado");
+            }
+
+            if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings)
+            { 
+                throw new InvalidEnumArgumentException("Tipo de conta inválido");
+            }
+
+            return await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account));
         }
 
-        public async Task<BankAccountModel> DepositBalance(decimal deposit, int id)
+        public async Task<BankAccountDTO> DepositBalance(decimal deposit, int id)
         {
-            if(await SearchAccountById(id) == null) throw new KeyNotFoundException("Conta não encontrada");
-            if(deposit <= 0) throw new InvalidOperationException("Valor de depósito inválido");
+            if (await SearchAccountById(id) == null)
+            {
+                throw new KeyNotFoundException("Conta não encontrada");
+            }
 
-            return await _accountRepository.DepositBalance(deposit, id);
+            if (deposit <= 0)
+            { 
+                throw new ArgumentOutOfRangeException("Valor de depósito inválido");
+            }
+
+            var account = await _accountRepository.DepositBalance(deposit, id);
+            return BankAccountDTO.ToDTO(account);
         }
 
         public async Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id)
         {
-            BankAccountModel account = await SearchAccountById(id) ?? throw new Exception("Conta não encontrada");
+            var account = await SearchAccountById(id) ?? throw new Exception("Conta não encontrada");
 
             if (withdraw <= 0) throw new InvalidOperationException("Valor de saque inválido");
             if (account.Balance < withdraw) throw new InvalidOperationException("Saldo insuficiente");
@@ -60,7 +87,7 @@ namespace BankAccountAPI.Services
 
         public async Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId)
         {
-            BankAccountModel accountById = await SearchAccountById(accountId) ?? throw new Exception($"Conta de ID: {accountId} não encontrada");
+            var accountById = await SearchAccountById(accountId) ?? throw new Exception($"Conta de ID: {accountId} não encontrada");
             if(await SearchAccountById(recipientId) == null) throw new KeyNotFoundException($"Conta de ID: {recipientId} não encontrada");
             
             if(accountId == recipientId) throw new Exception("IDs idênticos são inválidos");

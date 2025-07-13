@@ -8,17 +8,17 @@ namespace BankAccountAPI.Models.DTOs
 {
     public class UpdateClientDTO
     {
-        [StringLength(100, ErrorMessage = "O nome inserido é muito longo")]
+        [StringLength(100, ErrorMessage = "The name entered is too long")]
         public string ClientName { get; set; }
 
-        [EmailAddress(ErrorMessage = "Formato de email inválido")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string ClientEmail { get; set; }
 
-        [StringLength(13, MinimumLength = 11, ErrorMessage = "O número de telefone deve conter entre 11 a 13 dígitos")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "O número de telefone deve conter apenas números")]
+        [StringLength(13, MinimumLength = 11, ErrorMessage = "Phone number must be between 11 and 13 digits long")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must be contain only numbers")]
         public string ClientTel { get; set; }
         
-        [MinLength(8, ErrorMessage = "A senha deve conter no mínimo 8 caracteres")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; set; }
     }
 }

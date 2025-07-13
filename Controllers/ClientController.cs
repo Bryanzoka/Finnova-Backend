@@ -37,7 +37,7 @@ namespace BankAccountAPI.Controllers
             var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (cpf != clientCpf)
             {
-                return Unauthorized("Acesso não autorizado");
+                return Unauthorized("Unauthorized access");
             }
 
             BankClientDTO bankClientByCpf = await _clientServices.SearchClientByCPF(cpf);
@@ -68,7 +68,7 @@ namespace BankAccountAPI.Controllers
             var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (cpf != clientCpf)
             {
-                return Unauthorized("Não autorizado");
+                return Unauthorized("Invalid operation");
             }
 
             try
@@ -93,7 +93,7 @@ namespace BankAccountAPI.Controllers
             var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (cpf != clientCpf)
             {
-                return Unauthorized("Ação não autorizada");
+                return Unauthorized("Unauthorized acess");
             }
 
             bool clientDeleted = await _clientServices.DeleteClient(cpf);
