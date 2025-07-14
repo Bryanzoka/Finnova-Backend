@@ -48,13 +48,13 @@ namespace BankAccountAPI.Models
             CreatedAt = DateTime.Now;
         }
 
-        public void UpdateClient(string clientName, string clientEmail, string clientTel, string password, DateTime updateDateTime)
+        public void UpdateClient(string clientName, string clientEmail, string clientTel, string password)
         {
             ClientName = clientName;
             ClientEmail = clientEmail;
             ClientTel = clientTel;
             Password = password;
-            UpdatedAt = updateDateTime;
+            UpdatedAt = DateTime.Now;
         }
 
         public static BankClientModel ToModel(BankClientDTO bankClientDTO)

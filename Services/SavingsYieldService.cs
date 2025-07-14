@@ -45,7 +45,7 @@ namespace BankAccountAPI.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao aplicar rendimento: {ex.Message}");
+                Console.WriteLine($"Error applying yield: {ex.Message}");
             }
         }
 

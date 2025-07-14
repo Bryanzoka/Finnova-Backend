@@ -31,29 +31,22 @@ namespace BankAccountAPI.Services
         {
             if (id <= 0)
             {
-                throw new ArgumentException($"O ID: {id} é inválido");
+                throw new ArgumentException($"The ID: {id} is invalid");
             }
 
-            BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Conta não encontrada");
+            BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
 
             return BankAccountDTO.ToDTO(accountById);
         }
 
         public async Task<BankAccountModel> AddAccount(CreateAccountDTO account)
         {
-            if (string.IsNullOrEmpty(account.CPF) || !account.CPF.All(char.IsDigit))
-            {
-                throw new ArgumentException("CPF inválido");
-            }
-
-            if (await _clientServices.SearchClientByCPF(account.CPF) == null)
-            {
-                throw new KeyNotFoundException("Cliente com CPF informado não encontrado");
-            }
+            // Validate CPF and ensure client exists
+            await _clientServices.SearchClientByCPF(account.CPF);
 
             if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings)
-            { 
-                throw new InvalidEnumArgumentException("Tipo de conta inválido");
+            {
+                throw new InvalidEnumArgumentException("Invalid account type");
             }
 
             return await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account));
@@ -61,14 +54,11 @@ namespace BankAccountAPI.Services
 
         public async Task<BankAccountDTO> DepositBalance(decimal deposit, int id)
         {
-            if (await SearchAccountById(id) == null)
-            {
-                throw new KeyNotFoundException("Conta não encontrada");
-            }
+            await SearchAccountById(id);
 
             if (deposit <= 0)
             { 
-                throw new ArgumentOutOfRangeException("Valor de depósito inválido");
+                throw new ArgumentOutOfRangeException("Invalid deposit amount");
             }
 
             var account = await _accountRepository.DepositBalance(deposit, id);
@@ -77,29 +67,48 @@ namespace BankAccountAPI.Services
 
         public async Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id)
         {
-            var account = await SearchAccountById(id) ?? throw new Exception("Conta não encontrada");
+            var account = await SearchAccountById(id);
 
-            if (withdraw <= 0) throw new InvalidOperationException("Valor de saque inválido");
-            if (account.Balance < withdraw) throw new InvalidOperationException("Saldo insuficiente");
+            if (withdraw <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Invalid withdraw amount");
+            }
+
+            if (account.Balance < withdraw)
+            { 
+                throw new InvalidOperationException("Insufficient balance");
+            }
     
             return await _accountRepository.WithdrawBalance(withdraw, id);
         }
 
         public async Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId)
         {
-            var accountById = await SearchAccountById(accountId) ?? throw new Exception($"Conta de ID: {accountId} não encontrada");
-            if(await SearchAccountById(recipientId) == null) throw new KeyNotFoundException($"Conta de ID: {recipientId} não encontrada");
-            
-            if(accountId == recipientId) throw new Exception("IDs idênticos são inválidos");
-            if(transfer <= 0) throw new Exception("Saldo de transferência inválida");
-            if (accountById.Balance < transfer) throw new Exception("Saldo insuficiente");
+            var accountById = await SearchAccountById(accountId);
+
+            await SearchAccountById(recipientId);
+
+            if (accountId == recipientId)
+            {
+                throw new ArgumentException("Source and destination account IDs must be different");
+            }
+
+            if (transfer <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Invalid transfer balance");
+            }
+
+            if (accountById.Balance < transfer)
+            {
+                throw new InvalidOperationException("Insufficient balance");
+            }
             
             return await _accountRepository.TransferBalance(transfer, accountId, recipientId);
         }
 
         public async Task<bool> DeleteAccount(int id)
         {
-            if(await SearchAccountById(id) == null) throw new Exception("Conta não encontrada");
+            await SearchAccountById(id);
 
             return await _accountRepository.DeleteAccount(id);
         }

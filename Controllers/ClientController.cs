@@ -41,6 +41,7 @@ namespace BankAccountAPI.Controllers
             }
 
             BankClientDTO bankClientByCpf = await _clientServices.SearchClientByCPF(cpf);
+            
             return Ok(bankClientByCpf);
         }
 

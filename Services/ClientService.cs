@@ -26,10 +26,12 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
-            if(cpf.Length != 11 || !cpf.All(char.IsDigit))
-                return null;
+            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
+            {
+                throw new ArgumentException("Invalid CPF");
+            }
 
-            var client = await _clientRepository.SearchClientByCPF(cpf);
+            var client = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
 
@@ -40,14 +42,18 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
         {
-            if (cpf.Length != 11 || !cpf.All(char.IsDigit)) throw new ArgumentException("CPF inválido");
-            var updatedClient = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Conta com o CPF informado não encontrado");
+            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
+            {
+                throw new ArgumentException("Invalid CPF");
+            }
+
+            var updatedClient = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Account with informed CPF not found");
+
             updatedClient.UpdateClient(
                 client.ClientName ?? updatedClient.ClientName,
                 client.ClientEmail ?? updatedClient.ClientEmail,
                 client.ClientTel ?? updatedClient.ClientTel,
-                client.Password ?? updatedClient.Password,
-                DateTime.Now
+                client.Password ?? updatedClient.Password
             );
 
             await _clientRepository.UpdateClient(updatedClient, cpf);
@@ -56,19 +62,20 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
         {
-            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
-                throw new ArgumentException("CPF inválido");
-
             var client = await _clientRepository.SearchClientByCPF(cpf);
-            if (client == null || client.Password != password)
-                throw new UnauthorizedAccessException("Credenciais inválidas");
+
+            if (client.Password != password)
+            {
+                throw new UnauthorizedAccessException("Invalid credentials");
+            }
 
             return client;
         }
 
         public async Task<bool> DeleteClient(string cpf)
         {
-            if (await SearchClientByCPF(cpf) == null) throw new ArgumentException("Conta não encontrada");
+            await SearchClientByCPF(cpf);
+            
             return await _clientRepository.DeleteClient(cpf);
         }
     }

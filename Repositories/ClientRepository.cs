@@ -40,7 +40,7 @@ namespace BankAccountAPI.Repository
         {
             BankClientModel clientByCPF = await SearchClientByCPF(cpf);
 
-            clientByCPF.UpdateClient(client.ClientName, client.ClientEmail, client.ClientTel, client.Password, DateTime.Now);
+            clientByCPF.UpdateClient(client.ClientName, client.ClientEmail, client.ClientTel, client.Password);
 
             _dbContext.BankClient.Update(clientByCPF);
             await _dbContext.SaveChangesAsync();
