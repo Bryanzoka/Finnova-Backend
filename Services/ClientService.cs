@@ -46,6 +46,11 @@ namespace BankAccountAPI.Services
         public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
         {
             var updatedClient = BankClientModel.ToModel(await SearchClientByCPF(cpf));
+            
+            if (client.Password != null)
+            {
+                client.Password = _passwordHasher.HashPassword(client.Password);
+            }
 
             updatedClient.UpdateClient(
                 client.ClientName ?? updatedClient.ClientName,
