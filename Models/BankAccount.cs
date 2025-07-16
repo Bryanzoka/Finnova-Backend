@@ -67,16 +67,19 @@ namespace BankAccountAPI.Models
         public void Deposit(decimal amount)
         {
             Balance += amount;
+            LastTransactionAt = DateTime.UtcNow;
         }
 
         public void Withdraw(decimal amount)
         {
             Balance -= amount;
+            LastTransactionAt = DateTime.UtcNow;
         }
 
         public void YieldAccount(decimal yield)
         {
             Balance += yield;
+            LastTransactionAt = DateTime.UtcNow;
         }
     }
 }

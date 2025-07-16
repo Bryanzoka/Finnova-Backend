@@ -13,10 +13,12 @@ namespace BankAccountAPI.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IPasswordHasherService _passwordHasher;
 
-        public ClientService(IClientRepository clientRepository)
+        public ClientService(IClientRepository clientRepository, IPasswordHasherService passwordHasher)
         {
             _clientRepository = clientRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<List<BankClientModel>> SearchAllClients()
@@ -37,17 +39,13 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> AddClient(BankClientModel client)
         {
+            client.HashPassword(_passwordHasher.HashPassword(client.Password));
             return await _clientRepository.AddClient(client);
         }
 
         public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
         {
-            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
-            {
-                throw new ArgumentException("Invalid CPF");
-            }
-
-            var updatedClient = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Account with informed CPF not found");
+            var updatedClient = BankClientModel.ToModel(await SearchClientByCPF(cpf));
 
             updatedClient.UpdateClient(
                 client.ClientName ?? updatedClient.ClientName,
@@ -64,7 +62,7 @@ namespace BankAccountAPI.Services
         {
             var client = await _clientRepository.SearchClientByCPF(cpf);
 
-            if (client.Password != password)
+            if (!_passwordHasher.VerifyPassword(password, client.Password))
             {
                 throw new UnauthorizedAccessException("Invalid credentials");
             }
@@ -75,7 +73,7 @@ namespace BankAccountAPI.Services
         public async Task<bool> DeleteClient(string cpf)
         {
             await SearchClientByCPF(cpf);
-            
+
             return await _clientRepository.DeleteClient(cpf);
         }
     }

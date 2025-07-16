@@ -32,7 +32,7 @@ namespace BankAccountAPI.Models
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; private set; }
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; }
 
         public BankClientModel() { }
@@ -45,7 +45,6 @@ namespace BankAccountAPI.Models
             ClientEmail = clientEmail;
             ClientTel = clientTel;
             Password = password;
-            CreatedAt = DateTime.Now;
         }
 
         public void UpdateClient(string clientName, string clientEmail, string clientTel, string password)
@@ -54,7 +53,7 @@ namespace BankAccountAPI.Models
             ClientEmail = clientEmail;
             ClientTel = clientTel;
             Password = password;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public static BankClientModel ToModel(BankClientDTO bankClientDTO)
@@ -65,6 +64,11 @@ namespace BankAccountAPI.Models
                 ClientEmail = bankClientDTO.ClientEmail,
                 ClientTel = bankClientDTO.ClientTel
             };
+        }
+
+        public void HashPassword(string hashedPassword)
+        {
+            Password = hashedPassword;
         }
     }
 }

@@ -76,6 +76,7 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHostedService<SavingsYieldService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
