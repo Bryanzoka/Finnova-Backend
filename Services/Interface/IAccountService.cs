@@ -11,10 +11,10 @@ namespace BankAccountAPI.Services.Interface
     {
         Task<List<BankAccountModel>> SearchAllAccounts();
         Task<BankAccountDTO> SearchAccountById(int id);
-        Task<BankAccountModel> AddAccount(CreateAccountDTO account);  
-        Task<BankAccountDTO> DepositBalance(decimal deposit, int id);
-        Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id);
-        Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId);
-        Task<bool> DeleteAccount(int id);
+        Task<BankAccountDTO> AddAccount(CreateAccountDTO account);  
+        Task<BankAccountDTO> DepositBalance(decimal deposit, int id, string clientCpf);
+        Task<BankAccountDTO> WithdrawBalance(decimal withdraw, int id, string clientCpf);
+        Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId);
+        Task<bool> DeleteAccount(int id, string clientCpf);
     }
 }

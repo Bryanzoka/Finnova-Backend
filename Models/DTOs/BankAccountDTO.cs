@@ -13,7 +13,7 @@ namespace BankAccountAPI.Models.DTOs
         public string CPF { get; set; }
         public EnumAccountType AccountType { get; set; } 
         public decimal Balance { get; set; }
-    
+
 
         public static BankAccountDTO ToDTO(BankAccountModel model)
         {

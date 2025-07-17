@@ -17,17 +17,17 @@ namespace BankAccountAPI.Controllers
     [Route("api/account")]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountService _accountServices;
+        private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountServices)
+        public AccountController(IAccountService accountService)
         {
-            _accountServices = accountServices;
+            _accountService = accountService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<BankAccountModel>>> SearchAllClients()
         {
-            List<BankAccountModel> bankAccounts = await _accountServices.SearchAllAccounts();
+            List<BankAccountModel> bankAccounts = await _accountService.SearchAllAccounts();
             List<BankAccountDTO> bankAccountsDTO = bankAccounts.Select(x => BankAccountDTO.ToDTO(x)).ToList();
             return Ok(bankAccounts);
         }
@@ -40,7 +40,7 @@ namespace BankAccountAPI.Controllers
 
             try
             {
-                var bankAccountById = await _accountServices.SearchAccountById(id);
+                var bankAccountById = await _accountService.SearchAccountById(id);
                 if (bankAccountById.CPF != clientCpf)
                 {
                     return Unauthorized("Invalid operation");
@@ -58,13 +58,14 @@ namespace BankAccountAPI.Controllers
             }      
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
         {
             try
             {
-                var bankAccount = await _accountServices.AddAccount(newBankAccountDTO);
-                return Ok(BankAccountDTO.ToDTO(bankAccount));
+                var bankAccount = await _accountService.AddAccount(newBankAccountDTO);
+                return Ok(bankAccount);
             }
             catch (ArgumentException ex)
             {
@@ -80,48 +81,93 @@ namespace BankAccountAPI.Controllers
         [HttpPatch("deposit/{id}")]
         public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromForm] decimal amount, int id)
         {
-            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var account = await _accountServices.SearchAccountById(id);
-
-            if (clientCpf != account.CPF)
-            {
-                return Unauthorized("Invalid operation");
-            }
-
             try
             {
-                account = await _accountServices.DepositBalance(amount, id);
-                return account;
+                var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var account = await _accountService.DepositBalance(amount, id, clientCpf);
+                return Ok(account);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPatch("withdraw/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromForm] decimal amount, int id)
+        {
+            try
+            {
+                var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(amount, id, clientCpf);
+                return Ok(bankAccount);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest(ex.Message);
+            } 
+        }
+
+        [Authorize]
+        [HttpPatch("transfer")]
+        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromForm] decimal amount, int accountId, int recipientId)
+        {
+            try
+            {
+                var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                BankAccountDTO bankAccount = await _accountService.TransferBalance(amount, accountId, recipientId);
+                return Ok(bankAccount);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
-        [HttpPatch("withdraw/{id}")]
-        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromForm] decimal amount, int id)
-        {
-            BankAccountModel bankAccount = await _accountServices.WithdrawBalance(amount, id);
-            return Ok(BankAccountDTO.ToDTO(bankAccount));
-        }
-
-        [HttpPatch("transfer")]
-        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromForm] decimal amount, int accountId, int recipientId)
-        {
-            BankAccountModel bankAccount = await _accountServices.TransferBalance(amount, accountId, recipientId);
-            return Ok(BankAccountDTO.ToDTO(bankAccount));
-        }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<BankAccountDTO>> DeleteAccount(int id)
         {
-            bool accountDeleted = await _accountServices.DeleteAccount(id);
-            return Ok(accountDeleted);
+            try
+            {
+                var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                bool accountDeleted = await _accountService.DeleteAccount(id, clientCpf);
+                return Ok(accountDeleted);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

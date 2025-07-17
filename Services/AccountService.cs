@@ -39,7 +39,7 @@ namespace BankAccountAPI.Services
             return BankAccountDTO.ToDTO(accountById);
         }
 
-        public async Task<BankAccountModel> AddAccount(CreateAccountDTO account)
+        public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account)
         {
             // Validate CPF and ensure client exists
             await _clientServices.SearchClientByCPF(account.CPF);
@@ -49,25 +49,34 @@ namespace BankAccountAPI.Services
                 throw new InvalidEnumArgumentException("Invalid account type");
             }
 
-            return await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account));
+            return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
-        public async Task<BankAccountDTO> DepositBalance(decimal deposit, int id)
+        public async Task<BankAccountDTO> DepositBalance(decimal deposit, int id, string clientCpf)
         {
-            await SearchAccountById(id);
+            var account = await SearchAccountById(id);
+
+            if (clientCpf != account.CPF)
+            {
+                throw new UnauthorizedAccessException("Invalid operation");
+            }
 
             if (deposit <= 0)
             { 
                 throw new ArgumentOutOfRangeException("Invalid deposit amount");
             }
 
-            var account = await _accountRepository.DepositBalance(deposit, id);
-            return BankAccountDTO.ToDTO(account);
+            return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit, id));
         }
 
-        public async Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id)
+        public async Task<BankAccountDTO> WithdrawBalance(decimal withdraw, int id, string clientCpf)
         {
             var account = await SearchAccountById(id);
+
+            if (clientCpf != account.CPF)
+            {
+                throw new UnauthorizedAccessException("Invalid operation");
+            }
 
             if (withdraw <= 0)
             {
@@ -79,10 +88,10 @@ namespace BankAccountAPI.Services
                 throw new InvalidOperationException("Insufficient balance");
             }
     
-            return await _accountRepository.WithdrawBalance(withdraw, id);
+            return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw, id));
         }
 
-        public async Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId)
+        public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId)
         {
             var accountById = await SearchAccountById(accountId);
 
@@ -103,12 +112,17 @@ namespace BankAccountAPI.Services
                 throw new InvalidOperationException("Insufficient balance");
             }
             
-            return await _accountRepository.TransferBalance(transfer, accountId, recipientId);
+            return BankAccountDTO.ToDTO(await _accountRepository.TransferBalance(transfer, accountId, recipientId));
         }
 
-        public async Task<bool> DeleteAccount(int id)
+        public async Task<bool> DeleteAccount(int id, string clientCpf)
         {
-            await SearchAccountById(id);
+            var account = await SearchAccountById(id);
+
+            if (clientCpf != account.CPF)
+            {
+                throw new UnauthorizedAccessException("Invalid operation");
+            }
 
             return await _accountRepository.DeleteAccount(id);
         }

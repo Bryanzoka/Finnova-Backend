@@ -16,17 +16,17 @@ namespace BankAccountAPI.Controllers
     [Route("api/client")]
     public class ClientController : ControllerBase
     {
-        private readonly IClientService _clientServices;
+        private readonly IClientService _clientService;
 
-        public ClientController(IClientService clientServices)
+        public ClientController(IClientService clientService)
         {
-            _clientServices = clientServices;
+            _clientService = clientService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<BankClientModel>>> SearchAllClients()
         {
-            List<BankClientModel> bankClients = await _clientServices.SearchAllClients();
+            List<BankClientModel> bankClients = await _clientService.SearchAllClients();
             return Ok(bankClients);
         }
 
@@ -40,7 +40,7 @@ namespace BankAccountAPI.Controllers
                 return Unauthorized("Unauthorized access");
             }
 
-            BankClientDTO bankClientByCpf = await _clientServices.SearchClientByCPF(cpf);
+            BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(cpf);
             
             return Ok(bankClientByCpf);
         }
@@ -53,7 +53,7 @@ namespace BankAccountAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            BankClientModel bankClient = await _clientServices.AddClient(bankClientModel);
+            BankClientModel bankClient = await _clientService.AddClient(bankClientModel);
             return Ok(bankClient);
         }
         
@@ -74,7 +74,7 @@ namespace BankAccountAPI.Controllers
 
             try
             {
-                BankClientDTO bankClient = await _clientServices.UpdateClient(updatedClient, cpf);
+                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, cpf);
                 return Ok(bankClient);
             }
             catch (ArgumentException ex)
@@ -97,7 +97,7 @@ namespace BankAccountAPI.Controllers
                 return Unauthorized("Unauthorized acess");
             }
 
-            bool clientDeleted = await _clientServices.DeleteClient(cpf);
+            bool clientDeleted = await _clientService.DeleteClient(cpf);
             return Ok(clientDeleted);
         }
     }
