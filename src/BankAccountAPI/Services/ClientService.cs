@@ -39,6 +39,17 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> AddClient(BankClientModel client)
         {
+            try
+            {
+                await SearchClientByCPF(client.CPF);
+                
+                throw new InvalidOperationException("Client with this CPF already exists.");
+            }
+            catch (KeyNotFoundException)
+            {
+                //You can continue registering.
+            }
+            
             client.HashPassword(_passwordHasher.HashPassword(client.Password));
             return await _clientRepository.AddClient(client);
         }
@@ -65,8 +76,8 @@ namespace BankAccountAPI.Services
 
         public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
         {
-            var client = await _clientRepository.SearchClientByCPF(cpf);
-
+            var client = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Account with informed CPF does not exist");
+            
             if (!_passwordHasher.VerifyPassword(password, client.Password))
             {
                 throw new UnauthorizedAccessException("Invalid credentials");

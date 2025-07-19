@@ -40,6 +40,10 @@ namespace BankAccountAPI.Controllers
             {
                 return Unauthorized(ex.Message);
             }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

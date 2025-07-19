@@ -62,6 +62,11 @@ namespace BankAccountAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             try
             {
                 var bankAccount = await _accountService.AddAccount(newBankAccountDTO);

@@ -44,10 +44,10 @@ namespace BankAccountAPI.Services
             // Validate CPF and ensure client exists
             await _clientServices.SearchClientByCPF(account.CPF);
 
-            if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings)
+            /* if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings)
             {
                 throw new InvalidEnumArgumentException("Invalid account type");
-            }
+            } */
 
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }

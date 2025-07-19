@@ -53,8 +53,15 @@ namespace BankAccountAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            BankClientModel bankClient = await _clientService.AddClient(bankClientModel);
-            return Ok(bankClient);
+            try
+            {
+                BankClientModel bankClient = await _clientService.AddClient(bankClientModel);
+                return Ok(bankClient);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
         [Authorize]
