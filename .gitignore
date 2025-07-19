@@ -1,5 +1,5 @@
-appsettings.json
-appsettings.Development.json
-bin/
-obj/
-.vscode
+src/BankAccountAPI/appsettings.json
+src/BankAccountAPI/bin/
+src/BankAccountAPI/obj/
+.vscode/
+.vs/
