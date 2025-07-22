@@ -14,7 +14,7 @@ namespace BankAccountAPI.Services.Interface
         Task<BankAccountDTO> AddAccount(CreateAccountDTO account);  
         Task<BankAccountDTO> DepositBalance(decimal deposit, int id, string clientCpf);
         Task<BankAccountDTO> WithdrawBalance(decimal withdraw, int id, string clientCpf);
-        Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId);
+        Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, string clientCpf);
         Task<bool> DeleteAccount(int id, string clientCpf);
     }
 }

@@ -44,11 +44,6 @@ namespace BankAccountAPI.Services
             // Validate CPF and ensure client exists
             await _clientServices.SearchClientByCPF(account.CPF);
 
-            /* if (account.AccountType != EnumAccountType.Current && account.AccountType != EnumAccountType.Savings)
-            {
-                throw new InvalidEnumArgumentException("Invalid account type");
-            } */
-
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
@@ -58,12 +53,12 @@ namespace BankAccountAPI.Services
 
             if (clientCpf != account.CPF)
             {
-                throw new UnauthorizedAccessException("Invalid operation");
+                throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
 
             if (deposit <= 0)
             { 
-                throw new ArgumentOutOfRangeException("Invalid deposit amount");
+                throw new ArgumentOutOfRangeException("Deposit amount must be greater than 0");
             }
 
             return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit, id));
@@ -75,12 +70,12 @@ namespace BankAccountAPI.Services
 
             if (clientCpf != account.CPF)
             {
-                throw new UnauthorizedAccessException("Invalid operation");
+                throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
 
             if (withdraw <= 0)
             {
-                throw new ArgumentOutOfRangeException("Invalid withdraw amount");
+                throw new ArgumentOutOfRangeException("Withdraw amount must be greater than 0");
             }
 
             if (account.Balance < withdraw)
@@ -91,9 +86,14 @@ namespace BankAccountAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw, id));
         }
 
-        public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId)
+        public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, string clientCpf)
         {
             var accountById = await SearchAccountById(accountId);
+
+            if (accountById.CPF != clientCpf)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to access this account");
+            }
 
             await SearchAccountById(recipientId);
 
@@ -104,7 +104,7 @@ namespace BankAccountAPI.Services
 
             if (transfer <= 0)
             {
-                throw new ArgumentOutOfRangeException("Invalid transfer balance");
+                throw new ArgumentOutOfRangeException("Transfer amount must be greater than 0");
             }
 
             if (accountById.Balance < transfer)

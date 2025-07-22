@@ -61,12 +61,7 @@ namespace BankAccountAPI.Controllers
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
+        {    
             try
             {
                 var bankAccount = await _accountService.AddAccount(newBankAccountDTO);
@@ -83,13 +78,13 @@ namespace BankAccountAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("deposit/{id}")]
-        public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromForm] decimal amount, int id)
+        [HttpPatch("deposit")]
+        public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromBody] DepositDTO deposit)
         {
             try
             {
                 var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var account = await _accountService.DepositBalance(amount, id, clientCpf);
+                var account = await _accountService.DepositBalance(deposit.Amount, deposit.Id, clientCpf);
                 return Ok(account);
             }
             catch (KeyNotFoundException ex)
@@ -107,13 +102,13 @@ namespace BankAccountAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("withdraw/{id}")]
-        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromForm] decimal amount, int id)
+        [HttpPatch("withdraw")]
+        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromBody] WithdrawDTO withdraw)
         {
             try
             {
                 var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(amount, id, clientCpf);
+                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw.Amount, withdraw.Id, clientCpf);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -132,12 +127,12 @@ namespace BankAccountAPI.Controllers
 
         [Authorize]
         [HttpPatch("transfer")]
-        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromForm] decimal amount, int accountId, int recipientId)
+        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromBody] TransferDTO transfer)
         {
             try
             {
                 var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankAccountDTO bankAccount = await _accountService.TransferBalance(amount, accountId, recipientId);
+                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer.Amount, transfer.SenderAccountId, transfer.RecipientId, clientCpf);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -155,6 +150,10 @@ namespace BankAccountAPI.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
             }
 
         }

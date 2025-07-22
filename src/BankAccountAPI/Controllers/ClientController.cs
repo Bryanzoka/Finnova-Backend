@@ -48,11 +48,6 @@ namespace BankAccountAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<BankClientModel>> AddClient([FromBody] BankClientModel bankClientModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
                 BankClientModel bankClient = await _clientService.AddClient(bankClientModel);
@@ -68,11 +63,6 @@ namespace BankAccountAPI.Controllers
         [HttpPut("{cpf}")]
         public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient, string cpf)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (cpf != clientCpf)
             {
