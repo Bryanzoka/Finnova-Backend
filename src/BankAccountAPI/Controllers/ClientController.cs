@@ -60,14 +60,10 @@ namespace BankAccountAPI.Controllers
         }
         
         [Authorize]
-        [HttpPut("{cpf}")]
-        public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient, string cpf)
+        [HttpPut]
+        public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)
         {
-            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (cpf != clientCpf)
-            {
-                return Unauthorized("Invalid operation");
-            }
+            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             try
             {
@@ -85,17 +81,20 @@ namespace BankAccountAPI.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{cpf}")]
-        public async Task<ActionResult<BankClientModel>> DeleteClient(string cpf)
+        [HttpDelete]
+        public async Task<ActionResult<BankClientModel>> DeleteClient()
         {
-            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (cpf != clientCpf)
-            {
-                return Unauthorized("Unauthorized acess");
-            }
+            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            bool clientDeleted = await _clientService.DeleteClient(cpf);
-            return Ok(clientDeleted);
+            try
+            {
+                bool clientDeleted = await _clientService.DeleteClient(cpf);
+                return Ok(clientDeleted);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
