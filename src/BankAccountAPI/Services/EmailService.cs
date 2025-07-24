@@ -18,18 +18,16 @@ namespace BankAccountAPI.Services
             _configuration = configuration;
         }
 
-        public async Task SendVerificationCode(string toEmail)
+        public async Task SendVerificationCode(string toEmail, string validationCode)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Bank", _configuration["EmailSettings:From"]));
             emailMessage.To.Add(MailboxAddress.Parse(toEmail));
             emailMessage.Subject = "Email verification code";
-
-            string code = GenerateCode();
             
             emailMessage.Body = new TextPart("plain")
             {
-                Text = $"Your verification code is: {code}"
+                Text = $"Your verification code is: {validationCode}"
             };
 
             using (var client = new SmtpClient())
@@ -39,14 +37,6 @@ namespace BankAccountAPI.Services
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
             }
-        }
-
-        private string GenerateCode()
-        {
-            var random = new Random();
-            string code = random.Next(100000, 999999).ToString();
-
-            return code;
         }
     }
 }

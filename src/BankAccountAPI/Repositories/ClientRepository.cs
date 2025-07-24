@@ -27,10 +27,24 @@ namespace BankAccountAPI.Repository
 
             return clientByCPF;
         }
+        
+        public async Task<BankClientModel> SearchClientByEmail(string email)
+        {
+            BankClientModel clientByEmail = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.ClientEmail == email);
+
+            return clientByEmail;
+        }
+
+        public async Task<BankClientModel> SearchClientByPhone(string phone)
+        {
+            BankClientModel clientByPhone = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.ClientTel == phone);
+
+            return clientByPhone;
+        }
 
         public async Task<BankClientModel> AddClient(BankClientModel client)
         {
-            await  _dbContext.BankClient.AddAsync(client);
+            await _dbContext.BankClient.AddAsync(client);
             await _dbContext.SaveChangesAsync();
 
             return client;

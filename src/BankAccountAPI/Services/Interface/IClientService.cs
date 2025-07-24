@@ -11,7 +11,9 @@ namespace BankAccountAPI.Services.Interface
     {
         Task<List<BankClientModel>> SearchAllClients();
         Task<BankClientDTO> SearchClientByCPF(string cpf);
-        Task<BankClientModel> AddClient(BankClientModel client);  
+        Task<BankClientDTO> SearchClientByEmail(string email);
+        Task<BankClientDTO> SearchClientByPhone(string phone);
+        Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client);  
         Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf);
         Task<BankClientModel> ValidateCredentials(string cpf, string password);
         Task<bool> DeleteClient(string cpf);

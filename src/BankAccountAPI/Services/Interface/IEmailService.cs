@@ -7,6 +7,6 @@ namespace BankAccountAPI.Services.Interface
 {
     public interface IEmailService
     {
-        Task SendVerificationCode(string toEmail);
+        Task SendVerificationCode(string toEmail, string validationCode);
     }
 }

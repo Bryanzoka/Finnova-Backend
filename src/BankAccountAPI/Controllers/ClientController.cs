@@ -45,13 +45,13 @@ namespace BankAccountAPI.Controllers
             return Ok(bankClientByCpf);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<BankClientModel>> AddClient([FromBody] BankClientModel bankClientModel)
+        [HttpPost("verify")]
+        public async Task<ActionResult> ValidateClientInfo([FromBody] ClientValidationRequestDTO client)
         {
             try
             {
-                BankClientModel bankClient = await _clientService.AddClient(bankClientModel);
-                return Ok(bankClient);
+                var verifiedClient = await _clientService.ValidateClientInfo(client);
+                return Ok(verifiedClient);
             }
             catch (InvalidOperationException ex)
             {
