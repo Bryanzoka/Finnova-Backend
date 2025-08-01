@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Mail;
 using BankAccountAPI.Models;
-using BankAccountAPI.Services.Interface;
-using BankAccountAPI.Repository;
-using BankAccountAPI.Models.DTOs;
-using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionTranslators.Internal;
+using BankAccountAPI.Services.Interfaces;
+using BankAccountAPI.Models.DTOs.Client;
+using BankAccountAPI.Repositories.Interfaces;
 
 namespace BankAccountAPI.Services
 {
@@ -15,13 +10,13 @@ namespace BankAccountAPI.Services
     {
         private readonly IClientRepository _clientRepository;
         private readonly IPasswordHasherService _passwordHasher;
-        private readonly IEmailService _emailService;
+        private readonly IVerificationCodeService _verificationCodeService;
 
-        public ClientService(IClientRepository clientRepository, IPasswordHasherService passwordHasher, IEmailService emailService)
+        public ClientService(IClientRepository clientRepository, IPasswordHasherService passwordHasher, IVerificationCodeService verificationCodeService)
         {
             _clientRepository = clientRepository;
             _passwordHasher = passwordHasher;
-            _emailService = emailService;
+            _verificationCodeService = verificationCodeService;
         }
 
         public async Task<List<BankClientModel>> SearchAllClients()
@@ -47,7 +42,6 @@ namespace BankAccountAPI.Services
                 throw new ArgumentException("Invalid email format");
             }
             
-
             var client = await _clientRepository.SearchClientByEmail(email) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
@@ -65,37 +59,60 @@ namespace BankAccountAPI.Services
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
         {
-            if (await ClientExistByCPF(client.CPF))
+            if (await ClientExistsByCPF(client.CPF))
             {
                 throw new InvalidOperationException("Client with this CPF already exists");
             }
 
-            if (await ClientExistByEmail(client.Email))
+            if (await ClientExistsByEmail(client.Email))
             {
                 throw new InvalidOperationException("Client with this email already exists");
             }
 
-            if (await ClientExistByPhone(client.Phone))
+            if (await ClientExistsByPhone(client.Phone))
             {
                 throw new InvalidOperationException("Client with this phone already exists");
             }
 
             string code = GenerateRandomCode();
 
-            await _emailService.SendVerificationCode(client.Email, code);
+            var verificationCode = new ClientVerificationCodeModel(client.Email, code);
+
+            await _verificationCodeService.SendAndSaveCode(verificationCode);
 
             return client;
         }
 
-        public async Task<BankClientModel> AddClient(BankClientModel client)
+        public async Task<BankClientDTO> AddClient(RegisterClientDTO registerClient)
         {
-            if (await ClientExistByCPF(client.CPF))
+            if (await ClientExistsByCPF(registerClient.Cpf))
             {
                 throw new InvalidOperationException("Client with this CPF already exists");
             }
 
+            if (await ClientExistsByEmail(registerClient.Email))
+            {
+                throw new InvalidOperationException("Client with this email already exists");
+            }
+
+            if (await ClientExistsByPhone(registerClient.Phone))
+            {
+                throw new InvalidOperationException("Client with this phone already exists");
+            }
+
+            var verificationCode = await _verificationCodeService.GetCodeByEmail(registerClient.Email);
+
+            if (registerClient.Code != verificationCode.Code)
+            {
+                throw new UnauthorizedAccessException("Invalid verification code");
+            }
+
+            var client = BankClientModel.FromRegister(registerClient);
+
             client.HashPassword(_passwordHasher.HashPassword(client.Password));
-            return await _clientRepository.AddClient(client);
+            await _clientRepository.AddClient(client);
+
+            return BankClientDTO.ToDTO(client);
         }
 
         public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
@@ -137,7 +154,7 @@ namespace BankAccountAPI.Services
             return await _clientRepository.DeleteClient(cpf);
         }
 
-        private async Task<bool> ClientExistByCPF(string cpf)
+        private async Task<bool> ClientExistsByCPF(string cpf)
         {
             try
             {
@@ -150,7 +167,7 @@ namespace BankAccountAPI.Services
             }
         }
 
-        private async Task<bool> ClientExistByEmail(string email)
+        private async Task<bool> ClientExistsByEmail(string email)
         {
             try
             {
@@ -163,7 +180,7 @@ namespace BankAccountAPI.Services
             }
         }
 
-        private async Task<bool> ClientExistByPhone(string phone)
+        private async Task<bool> ClientExistsByPhone(string phone)
         {
             try
             {

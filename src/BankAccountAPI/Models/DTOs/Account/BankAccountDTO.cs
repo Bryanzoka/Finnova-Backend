@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BankAccountAPI.Enums;
 using BankAccountAPI.Models;
 
-namespace BankAccountAPI.Models.DTOs
+namespace BankAccountAPI.Models.DTOs.Account
 {
     public record BankAccountDTO
     {

@@ -6,7 +6,7 @@ using BankAccountAPI.Enums;
 using BankAccountAPI.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankAccountAPI.Models.DTOs
+namespace BankAccountAPI.Models.DTOs.Account
 {
     public record CreateAccountDTO
     {

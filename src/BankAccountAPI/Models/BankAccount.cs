@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BankAccountAPI.Enums;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
-using BankAccountAPI.Models.DTOs;
+using BankAccountAPI.Models.DTOs.Account;
 using BankAccountAPI.Controllers;
 using Microsoft.AspNetCore.Identity;
 

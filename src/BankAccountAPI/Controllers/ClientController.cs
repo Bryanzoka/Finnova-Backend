@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using BankAccountAPI.Repository;
 using BankAccountAPI.Models;
-using BankAccountAPI.Services.Interface;
-using BankAccountAPI.Models.DTOs;
+using BankAccountAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using BankAccountAPI.Models.DTOs.Client;
 
 namespace BankAccountAPI.Controllers
 {
@@ -56,6 +51,28 @@ namespace BankAccountAPI.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<BankClientDTO>> AddClient([FromBody] RegisterClientDTO client)
+        {
+            try
+            {
+                var registeredClient = await _clientService.AddClient(client);
+                return Ok(registeredClient);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
         

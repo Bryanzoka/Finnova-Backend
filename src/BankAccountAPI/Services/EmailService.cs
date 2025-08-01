@@ -4,7 +4,7 @@ using System.Linq;
 using MailKit.Net.Smtp;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using BankAccountAPI.Services.Interface;
+using BankAccountAPI.Services.Interfaces;
 using MimeKit;
 
 namespace BankAccountAPI.Services
@@ -18,7 +18,7 @@ namespace BankAccountAPI.Services
             _configuration = configuration;
         }
 
-        public async Task SendVerificationCode(string toEmail, string validationCode)
+        public async Task SendVerificationCode(string toEmail, string verificationCode)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Bank", _configuration["EmailSettings:From"]));
@@ -27,7 +27,7 @@ namespace BankAccountAPI.Services
             
             emailMessage.Body = new TextPart("plain")
             {
-                Text = $"Your verification code is: {validationCode}"
+                Text = $"Your verification code is: {verificationCode}"
             };
 
             using (var client = new SmtpClient())

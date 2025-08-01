@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BankAccountAPI.Models.DTOs
+namespace BankAccountAPI.Models.DTOs.Account
 {
     public class DepositDTO
     {

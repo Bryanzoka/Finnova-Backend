@@ -1,12 +1,13 @@
 using Microsoft.OpenApi.Models;
 using BankAccountAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using BankAccountAPI.Repository;
-using BankAccountAPI.Services.Interface;
+using BankAccountAPI.Repositories;
+using BankAccountAPI.Services.Interfaces;
 using BankAccountAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BankAccountAPI.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -77,6 +78,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+builder.Services.AddScoped<IVerificationCodeService, VerificationCodeService>();
 builder.Services.AddHostedService<SavingsYieldService>();
 var app = builder.Build();
 

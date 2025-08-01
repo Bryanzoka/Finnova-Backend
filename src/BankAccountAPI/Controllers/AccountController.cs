@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using BankAccountAPI.Repository;
 using BankAccountAPI.Models;
-using BankAccountAPI.Models.DTOs;
-using BankAccountAPI.Services.Interface;
+using BankAccountAPI.Models.DTOs.Account;
+using BankAccountAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using System.ComponentModel;
 
 namespace BankAccountAPI.Controllers
 {

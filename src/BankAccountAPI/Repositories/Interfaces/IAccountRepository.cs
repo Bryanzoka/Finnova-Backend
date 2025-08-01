@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BankAccountAPI.Models;
 
-namespace BankAccountAPI.Repository
+namespace BankAccountAPI.Repositories.Interfaces
 {
     public interface IAccountRepository
     {

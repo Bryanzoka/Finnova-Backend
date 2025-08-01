@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BankAccountAPI.Models;
-using BankAccountAPI.Models.DTOs;
+using BankAccountAPI.Models.DTOs.Account;
 
-namespace BankAccountAPI.Services.Interface
+namespace BankAccountAPI.Services.Interfaces
 {
     public interface IAccountService
     {

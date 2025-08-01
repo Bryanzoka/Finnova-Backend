@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankAccountAPI.Models.DTOs
+namespace BankAccountAPI.Models.DTOs.Client
 {
     public class UpdateClientDTO
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BankAccountAPI.Services.Interface;
+using BankAccountAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace BankAccountAPI.Services

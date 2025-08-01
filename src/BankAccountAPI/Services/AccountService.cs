@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BankAccountAPI.Models;
-using BankAccountAPI.Services.Interface;
-using BankAccountAPI.Repository;
-using BankAccountAPI.Enums;
-using BankAccountAPI.Models.DTOs;
-using System.ComponentModel;
-using Microsoft.VisualBasic;
+using BankAccountAPI.Services.Interfaces;
+using BankAccountAPI.Models.DTOs.Account;
+using BankAccountAPI.Repositories.Interfaces;
 
 namespace BankAccountAPI.Services
 {

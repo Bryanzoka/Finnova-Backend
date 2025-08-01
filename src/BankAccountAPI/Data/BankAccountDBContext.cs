@@ -16,12 +16,15 @@ namespace BankAccountAPI.Data
         }
 
         public DbSet<BankClientModel> BankClient { set; get; }
-        public DbSet<BankAccountModel> BankAccount { set; get; } 
+        public DbSet<BankAccountModel> BankAccount { set; get; }
+        public DbSet<ClientVerificationCodeModel> ClientVerificationCode { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new BankClientMap());
             modelBuilder.ApplyConfiguration(new BankAccountMap());
+            modelBuilder.ApplyConfiguration(new ClientValidationCodeMap());
+            
             base.OnModelCreating(modelBuilder);
         }
     }

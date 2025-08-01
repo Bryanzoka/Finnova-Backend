@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using BankAccountAPI.Models.DTOs;
+using BankAccountAPI.Models.DTOs.Client;
 
 namespace BankAccountAPI.Models
 {
@@ -63,6 +64,18 @@ namespace BankAccountAPI.Models
                 ClientName = bankClientDTO.ClientName,
                 ClientEmail = bankClientDTO.ClientEmail,
                 ClientTel = bankClientDTO.ClientTel
+            };
+        }
+
+        public static BankClientModel FromRegister(RegisterClientDTO client)
+        {
+            return new BankClientModel
+            {
+                CPF = client.Cpf,
+                ClientName = client.Name,
+                ClientEmail = client.Email,
+                ClientTel = client.Phone,
+                Password = client.Password
             };
         }
 

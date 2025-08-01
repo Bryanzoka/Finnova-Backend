@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using BankAccountAPI.Models;
 using BankAccountAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using BankAccountAPI.Repositories.Interfaces;
 
-namespace BankAccountAPI.Repository
+namespace BankAccountAPI.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
