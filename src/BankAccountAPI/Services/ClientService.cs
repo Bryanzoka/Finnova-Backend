@@ -59,7 +59,7 @@ namespace BankAccountAPI.Services
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
         {
-            if (await ClientExistsByCPF(client.CPF))
+            if (await ClientExistsByCPF(client.Cpf))
             {
                 throw new InvalidOperationException("Client with this CPF already exists");
             }
@@ -125,9 +125,9 @@ namespace BankAccountAPI.Services
             }
 
             updatedClient.UpdateClient(
-                client.ClientName ?? updatedClient.ClientName,
-                client.ClientEmail ?? updatedClient.ClientEmail,
-                client.ClientTel ?? updatedClient.ClientTel,
+                client.Name ?? updatedClient.Name,
+                client.Email ?? updatedClient.Email,
+                client.Phone ?? updatedClient.Phone,
                 client.Password ?? updatedClient.Password
             );
 

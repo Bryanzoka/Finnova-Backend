@@ -15,12 +15,12 @@ namespace BankAccountAPI.Models
     public class BankAccountModel
     {
         [Key]
-        public int AccountId { get; private set; }
+        public int Id { get; private set; }
 
         [Required(ErrorMessage = "CPF is required")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF must contain only numbers")]
-        public string CPF { get; private set; }
+        public string Cpf { get; private set; }
 
         [Required(ErrorMessage = "Account type is required")]
         [EnumDataType(typeof(EnumAccountType), ErrorMessage = "Invalid account type")]
@@ -38,8 +38,8 @@ namespace BankAccountAPI.Models
         [JsonConstructor]
         public BankAccountModel(int id, string cpf, EnumAccountType accounttype)
         {
-            AccountId = id;
-            CPF = cpf;
+            Id = id;
+            Cpf = cpf;
             AccountType = accounttype;
             Balance = 0;
         }
@@ -48,8 +48,8 @@ namespace BankAccountAPI.Models
         {
             return new BankAccountModel
             {
-                AccountId = dto.Id,
-                CPF = dto.CPF,
+                Id = dto.Id,
+                Cpf = dto.Cpf,
                 AccountType = dto.AccountType,
                 Balance = dto.Balance
             };
@@ -59,7 +59,7 @@ namespace BankAccountAPI.Models
         {
             return new BankAccountModel
             {
-                CPF = dto.CPF,
+                Cpf = dto.Cpf,
                 AccountType = dto.AccountType,
             };
         }

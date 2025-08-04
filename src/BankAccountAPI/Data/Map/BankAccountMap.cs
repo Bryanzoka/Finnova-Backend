@@ -13,17 +13,18 @@ namespace BankAccountAPI.Data.Map
     {
         public void Configure(EntityTypeBuilder<BankAccountModel> builder)
         {
-            builder
-                .HasKey(x => x.AccountId);
+            builder.ToTable("accounts");
+
+            builder.HasKey(x => x.Id);
 
             builder
-                .Property(x => x.AccountId)
-                .HasColumnName("account_id");
+                .Property(x => x.Id)
+                .HasColumnName("id");
 
             builder
-                .Property(x => x.CPF)
+                .Property(x => x.Cpf)
                 .IsRequired()
-                .HasColumnName("account_cpf")
+                .HasColumnName("client_cpf")
                 .HasColumnType("VARCHAR(11)")
                 .HasMaxLength(11);
 
@@ -35,7 +36,7 @@ namespace BankAccountAPI.Data.Map
             builder
                 .Property(x => x.Balance)
                 .IsRequired()
-                .HasColumnName("account_balance")
+                .HasColumnName("balance")
                 .HasColumnType("DECIMAL(10,2)");
 
             builder
@@ -50,11 +51,11 @@ namespace BankAccountAPI.Data.Map
             builder
                 .Property(x => x.LastTransactionAt)
                 .HasColumnName("last_transaction_at");
-            
+
             builder
                 .HasOne(x => x.BankClient)
                 .WithMany() 
-                .HasForeignKey(x => x.CPF)
+                .HasForeignKey(x => x.Cpf)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

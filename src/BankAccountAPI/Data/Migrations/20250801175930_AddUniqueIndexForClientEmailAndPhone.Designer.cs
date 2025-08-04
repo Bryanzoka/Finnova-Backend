@@ -4,6 +4,7 @@ using BankAccountAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankAccountAPI.Migrations
 {
     [DbContext(typeof(BankAccountDBContext))]
-    partial class BankAccountDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250801175930_AddUniqueIndexForClientEmailAndPhone")]
+    partial class AddUniqueIndexForClientEmailAndPhone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,12 +27,12 @@ namespace BankAccountAPI.Migrations
 
             modelBuilder.Entity("BankAccountAPI.Models.BankAccountModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("account_id");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AccountId"));
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int")
@@ -37,13 +40,13 @@ namespace BankAccountAPI.Migrations
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("DECIMAL(10,2)")
-                        .HasColumnName("balance");
+                        .HasColumnName("account_balance");
 
-                    b.Property<string>("Cpf")
+                    b.Property<string>("CPF")
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("VARCHAR(11)")
-                        .HasColumnName("client_cpf");
+                        .HasColumnName("account_cpf");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -57,60 +60,60 @@ namespace BankAccountAPI.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("AccountId");
 
-                    b.HasIndex("Cpf");
+                    b.HasIndex("CPF");
 
-                    b.ToTable("accounts", (string)null);
+                    b.ToTable("BankAccount");
                 });
 
             modelBuilder.Entity("BankAccountAPI.Models.BankClientModel", b =>
                 {
-                    b.Property<string>("Cpf")
+                    b.Property<string>("CPF")
                         .HasMaxLength(11)
                         .HasColumnType("VARCHAR(11)")
-                        .HasColumnName("cpf");
+                        .HasColumnName("client_cpf");
+
+                    b.Property<string>("ClientEmail")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("client_email");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("client_name");
+
+                    b.Property<string>("ClientTel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("client_phone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("name");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("password");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("phone");
+                        .HasColumnName("client_password");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Cpf");
+                    b.HasKey("CPF");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("ClientEmail")
                         .IsUnique();
 
-                    b.HasIndex("Phone")
+                    b.HasIndex("ClientTel")
                         .IsUnique();
 
-                    b.ToTable("clients", (string)null);
+                    b.ToTable("BankClient");
                 });
 
             modelBuilder.Entity("BankAccountAPI.Models.ClientVerificationCodeModel", b =>
@@ -140,14 +143,14 @@ namespace BankAccountAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("client_verification_codes", (string)null);
+                    b.ToTable("ClientVerificationCode");
                 });
 
             modelBuilder.Entity("BankAccountAPI.Models.BankAccountModel", b =>
                 {
                     b.HasOne("BankAccountAPI.Models.BankClientModel", "BankClient")
                         .WithMany()
-                        .HasForeignKey("Cpf")
+                        .HasForeignKey("CPF")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

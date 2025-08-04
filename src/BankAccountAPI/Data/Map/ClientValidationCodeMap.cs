@@ -12,8 +12,9 @@ namespace BankAccountAPI.Data.Map
     {
         public void Configure(EntityTypeBuilder<ClientVerificationCodeModel> builder)
         {
-            builder
-                .HasKey(x => x.Id);
+            builder.ToTable("client_verification_codes");
+
+            builder.HasKey(x => x.Id);
 
             builder
                 .Property(x => x.Id)

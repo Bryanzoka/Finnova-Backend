@@ -9,9 +9,9 @@ namespace BankAccountAPI.Enums
 {
     public enum EnumAccountType
     {
-        [Description("Corrente")]
+        [Description("current")]
         Current,
-        [Description("Poupança")]
+        [Description("savings")]
         Savings
     }
 }

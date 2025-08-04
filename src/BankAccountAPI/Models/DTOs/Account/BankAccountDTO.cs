@@ -10,7 +10,7 @@ namespace BankAccountAPI.Models.DTOs.Account
     public record BankAccountDTO
     {
         public int Id { get; set; }
-        public string CPF { get; set; }
+        public string Cpf { get; set; }
         public EnumAccountType AccountType { get; set; } 
         public decimal Balance { get; set; }
 
@@ -19,8 +19,8 @@ namespace BankAccountAPI.Models.DTOs.Account
         {
             return new BankAccountDTO
             {
-                Id = model.AccountId,
-                CPF = model.CPF,
+                Id = model.Id,
+                Cpf = model.Cpf,
                 AccountType = model.AccountType,
                 Balance = model.Balance
             };

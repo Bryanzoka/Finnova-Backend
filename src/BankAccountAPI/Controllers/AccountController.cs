@@ -35,7 +35,7 @@ namespace BankAccountAPI.Controllers
             try
             {
                 var bankAccountById = await _accountService.SearchAccountById(id);
-                if (bankAccountById.CPF != clientCpf)
+                if (bankAccountById.Cpf != clientCpf)
                 {
                     return Unauthorized("Invalid operation");
                 }

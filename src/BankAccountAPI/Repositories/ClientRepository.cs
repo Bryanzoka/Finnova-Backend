@@ -24,21 +24,21 @@ namespace BankAccountAPI.Repositories
 
         public async Task<BankClientModel> SearchClientByCPF(string cpf)
         {
-            BankClientModel clientByCPF = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.CPF == cpf);
+            BankClientModel clientByCPF = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Cpf == cpf);
 
             return clientByCPF;
         }
         
         public async Task<BankClientModel> SearchClientByEmail(string email)
         {
-            BankClientModel clientByEmail = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.ClientEmail == email);
+            BankClientModel clientByEmail = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Email == email);
 
             return clientByEmail;
         }
 
         public async Task<BankClientModel> SearchClientByPhone(string phone)
         {
-            BankClientModel clientByPhone = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.ClientTel == phone);
+            BankClientModel clientByPhone = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Phone == phone);
 
             return clientByPhone;
         }
@@ -55,7 +55,7 @@ namespace BankAccountAPI.Repositories
         {
             BankClientModel clientByCPF = await SearchClientByCPF(cpf);
 
-            clientByCPF.UpdateClient(client.ClientName, client.ClientEmail, client.ClientTel, client.Password);
+            clientByCPF.UpdateClient(client.Name, client.Email, client.Phone, client.Password);
 
             _dbContext.BankClient.Update(clientByCPF);
             await _dbContext.SaveChangesAsync();

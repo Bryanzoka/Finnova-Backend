@@ -24,7 +24,7 @@ namespace BankAccountAPI.Repositories
 
         public async Task<BankAccountModel> SearchAccountById(int id)
         {
-            BankAccountModel accountById = await _dbContext.BankAccount.FirstOrDefaultAsync(c => c.AccountId == id);
+            BankAccountModel accountById = await _dbContext.BankAccount.FirstOrDefaultAsync(c => c.Id == id);
 
             return accountById;
         }

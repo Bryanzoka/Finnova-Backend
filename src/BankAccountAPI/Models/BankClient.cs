@@ -15,20 +15,20 @@ namespace BankAccountAPI.Models
         [Required(ErrorMessage = "CPF is required")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF must contain only numbers")]
-        public string CPF { get; private set; }
+        public string Cpf { get; private set; }
 
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "The entered name is to long")]
-        public string ClientName { get; private set; }
+        public string Name { get; private set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
-        public string ClientEmail { get; private set; }
+        public string Email { get; private set; }
 
         [Required(ErrorMessage = "Phone number is required")]
         [StringLength(13, MinimumLength = 11, ErrorMessage = "Phone number must be between 11 and 13 digits long")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only numbers")]
-        public string ClientTel { get; private set; }
+        public string Phone { get; private set; }
 
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
@@ -39,20 +39,20 @@ namespace BankAccountAPI.Models
         public BankClientModel() { }
 
         [JsonConstructor]
-        public BankClientModel(string cpf, string clientName, string clientEmail, string clientTel, string password)
+        public BankClientModel(string cpf, string name, string email, string phone, string password)
         {
-            CPF = cpf;
-            ClientName = clientName;
-            ClientEmail = clientEmail;
-            ClientTel = clientTel;
+            Cpf = cpf;
+            Name = name;
+            Email = email;
+            Phone = phone;
             Password = password;
         }
 
-        public void UpdateClient(string clientName, string clientEmail, string clientTel, string password)
+        public void UpdateClient(string name, string email, string phone, string password)
         {
-            ClientName = clientName;
-            ClientEmail = clientEmail;
-            ClientTel = clientTel;
+            Name = name;
+            Email = email;
+            Phone = phone;
             Password = password;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -61,9 +61,9 @@ namespace BankAccountAPI.Models
         {
             return new BankClientModel
             {
-                ClientName = bankClientDTO.ClientName,
-                ClientEmail = bankClientDTO.ClientEmail,
-                ClientTel = bankClientDTO.ClientTel
+                Name = bankClientDTO.Name,
+                Email = bankClientDTO.Email,
+                Phone = bankClientDTO.Phone
             };
         }
 
@@ -71,10 +71,10 @@ namespace BankAccountAPI.Models
         {
             return new BankClientModel
             {
-                CPF = client.Cpf,
-                ClientName = client.Name,
-                ClientEmail = client.Email,
-                ClientTel = client.Phone,
+                Cpf = client.Cpf,
+                Name = client.Name,
+                Email = client.Email,
+                Phone = client.Phone,
                 Password = client.Password
             };
         }

@@ -33,8 +33,8 @@ namespace BankAccountAPI.Services
                 audience: audience,
                 claims:
                 [
-                    new Claim(type: ClaimTypes.NameIdentifier, bankClient.CPF),
-                    new Claim(type: ClaimTypes.Name, bankClient.ClientName)
+                    new Claim(type: ClaimTypes.NameIdentifier, bankClient.Cpf),
+                    new Claim(type: ClaimTypes.Name, bankClient.Name)
                 ],
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials

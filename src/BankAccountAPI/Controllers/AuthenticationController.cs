@@ -22,7 +22,7 @@ namespace BankAccountAPI.Controllers
         {
             try
             {
-                var client = await _clientService.ValidateCredentials(loginClientDTO.CPF, loginClientDTO.Password);
+                var client = await _clientService.ValidateCredentials(loginClientDTO.Cpf, loginClientDTO.Password);
                 var token = _tokenService.GenerateToken(client);
                 return Ok(token);
             }

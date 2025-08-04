@@ -35,7 +35,7 @@ namespace BankAccountAPI.Services
         public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account)
         {
             // Validate CPF and ensure client exists
-            await _clientServices.SearchClientByCPF(account.CPF);
+            await _clientServices.SearchClientByCPF(account.Cpf);
 
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
@@ -44,7 +44,7 @@ namespace BankAccountAPI.Services
         {
             var account = await SearchAccountById(id);
 
-            if (clientCpf != account.CPF)
+            if (clientCpf != account.Cpf)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -61,7 +61,7 @@ namespace BankAccountAPI.Services
         {
             var account = await SearchAccountById(id);
 
-            if (clientCpf != account.CPF)
+            if (clientCpf != account.Cpf)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -83,7 +83,7 @@ namespace BankAccountAPI.Services
         {
             var accountById = await SearchAccountById(accountId);
 
-            if (accountById.CPF != clientCpf)
+            if (accountById.Cpf != clientCpf)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -112,7 +112,7 @@ namespace BankAccountAPI.Services
         {
             var account = await SearchAccountById(id);
 
-            if (clientCpf != account.CPF)
+            if (clientCpf != account.Cpf)
             {
                 throw new UnauthorizedAccessException("Invalid operation");
             }

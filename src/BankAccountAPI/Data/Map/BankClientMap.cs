@@ -13,37 +13,46 @@ namespace BankAccountAPI.Data.Map
     {
         public void Configure(EntityTypeBuilder<BankClientModel> builder)
         {
-            builder
-                .HasKey(x => x.CPF);
+            builder.ToTable("clients");
+
+            builder.HasKey(x => x.Cpf);
 
             builder
-                .Property(x => x.CPF)
+                .Property(x => x.Cpf)
                 .IsRequired()
                 .HasColumnType("VARCHAR(11)")
-                .HasColumnName("client_cpf");
+                .HasColumnName("cpf");
 
             builder
-                .Property(x => x.ClientName)
+                .Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(255)
-                .HasColumnName("client_name");
+                .HasColumnName("name");
 
             builder
-                .Property(x => x.ClientEmail)
+                .Property(x => x.Email)
                 .IsRequired()
                 .HasMaxLength(150)
-                .HasColumnName("client_email");
+                .HasColumnName("email");
 
             builder
-                .Property(x => x.ClientTel)
+                .HasIndex(x => x.Email)
+                .IsUnique();
+
+            builder
+                .Property(x => x.Phone)
                 .IsRequired()
                 .HasMaxLength(20)
-                .HasColumnName("client_tel");
+                .HasColumnName("phone");
+
+            builder
+                .HasIndex(x => x.Phone)
+                .IsUnique();
 
             builder
                 .Property(x => x.Password)
                 .IsRequired()
-                .HasColumnName("client_password");
+                .HasColumnName("password");
 
             builder
                 .Property(x => x.CreatedAt)
