@@ -1,0 +1,37 @@
+using Microsoft.EntityFrameworkCore;
+using FinnovaAPI.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace FinnovaAPI.Data.Map
+{
+    public class ClientValidationCodeMap : IEntityTypeConfiguration<ClientVerificationCodeModel>
+    {
+        public void Configure(EntityTypeBuilder<ClientVerificationCodeModel> builder)
+        {
+            builder.ToTable("client_verification_codes");
+
+            builder.HasKey(x => x.Id);
+
+            builder
+                .Property(x => x.Id)
+                .HasColumnName("id");
+
+            builder
+                .Property(x => x.Email)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("email");
+
+            builder
+                .Property(x => x.Code)
+                .IsRequired()
+                .HasMaxLength(6)
+                .HasColumnName("code");
+
+            builder
+                .Property(x => x.Expiration)
+                .IsRequired()
+                .HasColumnName("expiration");
+        }
+    }
+}
