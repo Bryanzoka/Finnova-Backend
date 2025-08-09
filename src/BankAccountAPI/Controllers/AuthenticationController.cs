@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BankAccountAPI.Controllers
 {
     [ApiController]
-    [Route("api/authentication")]
+    [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IClientService _clientService;

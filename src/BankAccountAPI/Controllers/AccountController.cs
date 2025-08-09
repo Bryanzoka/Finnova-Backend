@@ -22,7 +22,7 @@ namespace BankAccountAPI.Controllers
         public async Task<ActionResult<List<BankAccountModel>>> SearchAllClients()
         {
             List<BankAccountModel> bankAccounts = await _accountService.SearchAllAccounts();
-            List<BankAccountDTO> bankAccountsDTO = bankAccounts.Select(x => BankAccountDTO.ToDTO(x)).ToList();
+            List<BankAccountDTO> bankAccountsDTO = bankAccounts.Select(BankAccountDTO.ToDTO).ToList();
             return Ok(bankAccounts);
         }
 
@@ -53,6 +53,25 @@ namespace BankAccountAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet("searchaccounts/{cpf}")]
+        public async Task<ActionResult<List<AccountPreviewDTO>>> SearchAllAccountsByCpf(string cpf)
+        {
+            try
+            {
+                var accounts = await _accountService.SearchAllAccountsByCpf(cpf);
+                return Ok(accounts);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
         {    
@@ -78,7 +97,7 @@ namespace BankAccountAPI.Controllers
             try
             {
                 var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var account = await _accountService.DepositBalance(deposit.Amount, deposit.Id, clientCpf);
+                var account = await _accountService.DepositBalance(deposit, clientCpf);
                 return Ok(account);
             }
             catch (KeyNotFoundException ex)
@@ -102,7 +121,7 @@ namespace BankAccountAPI.Controllers
             try
             {
                 var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw.Amount, withdraw.Id, clientCpf);
+                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw, clientCpf);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)

@@ -40,6 +40,12 @@ namespace BankAccountAPI.Data.Map
                 .HasColumnType("DECIMAL(10,2)");
 
             builder
+                .Property(x => x.Password)
+                .IsRequired()
+                .HasColumnName("password")
+                .HasColumnType("VARCHAR(4)");
+
+            builder
                 .Property(x => x.CreatedAt)
                 .IsRequired()
                 .HasColumnName("created_at");

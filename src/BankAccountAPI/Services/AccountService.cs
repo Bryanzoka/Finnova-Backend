@@ -32,6 +32,20 @@ namespace BankAccountAPI.Services
             return BankAccountDTO.ToDTO(accountById);
         }
 
+        public async Task<List<AccountPreviewDTO>> SearchAllAccountsByCpf(string cpf)
+        {
+            var client = await _clientServices.SearchClientByCPF(cpf);
+            var accounts = await _accountRepository.SearchAllAccountsByCpf(cpf) ?? throw new KeyNotFoundException("Account not found with this CPF");
+
+            return accounts.Select(account => new AccountPreviewDTO
+            {
+                Id = account.Id,
+                Cpf = account.Cpf,
+                Name = client.Name,
+                AccountType = account.AccountType
+            }).ToList();
+        }
+
         public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account)
         {
             // Validate CPF and ensure client exists
@@ -40,43 +54,43 @@ namespace BankAccountAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
-        public async Task<BankAccountDTO> DepositBalance(decimal deposit, int id, string clientCpf)
+        public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, string clientCpf)
         {
-            var account = await SearchAccountById(id);
+            var account = await SearchAccountById(deposit.Id);
 
             if (clientCpf != account.Cpf)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
 
-            if (deposit <= 0)
+            if (deposit.Amount <= 0)
             { 
                 throw new ArgumentOutOfRangeException("Deposit amount must be greater than 0");
             }
 
-            return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit, id));
+            return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit.Amount, deposit.Id));
         }
 
-        public async Task<BankAccountDTO> WithdrawBalance(decimal withdraw, int id, string clientCpf)
+        public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, string clientCpf)
         {
-            var account = await SearchAccountById(id);
+            var account = await SearchAccountById(withdraw.Id);
 
             if (clientCpf != account.Cpf)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
 
-            if (withdraw <= 0)
+            if (withdraw.Amount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Withdraw amount must be greater than 0");
             }
 
-            if (account.Balance < withdraw)
+            if (account.Balance < withdraw.Amount)
             { 
                 throw new InvalidOperationException("Insufficient balance");
             }
     
-            return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw, id));
+            return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw.Amount, withdraw.Id));
         }
 
         public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, string clientCpf)

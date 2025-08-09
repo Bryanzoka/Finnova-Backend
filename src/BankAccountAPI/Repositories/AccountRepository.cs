@@ -29,9 +29,14 @@ namespace BankAccountAPI.Repositories
             return accountById;
         }
 
+        public async Task<List<BankAccountModel>> SearchAllAccountsByCpf(string cpf)
+        {
+            return await _dbContext.BankAccount.Where(x => x.Cpf == cpf).ToListAsync();
+        }
+
         public async Task<BankAccountModel> AddAccount(BankAccountModel account)
         {
-            await  _dbContext.BankAccount.AddAsync(account);
+            await _dbContext.BankAccount.AddAsync(account);
             await _dbContext.SaveChangesAsync();
 
             return account;

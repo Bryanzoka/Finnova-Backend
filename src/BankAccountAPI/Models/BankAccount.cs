@@ -26,6 +26,11 @@ namespace BankAccountAPI.Models
         [EnumDataType(typeof(EnumAccountType), ErrorMessage = "Invalid account type")]
         public EnumAccountType AccountType { get; private set; } 
         public decimal Balance { get; private set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(4, MinimumLength = 4, ErrorMessage = "Password must be 4 digits long")]
+        [RegularExpression(@"^\d{4}$", ErrorMessage = "Password must contain only numbers")]
+        public string Password { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; }
         public DateTime LastTransactionAt { get; private set; }
@@ -36,11 +41,12 @@ namespace BankAccountAPI.Models
         public BankAccountModel() {}
 
         [JsonConstructor]
-        public BankAccountModel(int id, string cpf, EnumAccountType accounttype)
+        public BankAccountModel(int id, string cpf, EnumAccountType accounttype, string password)
         {
             Id = id;
             Cpf = cpf;
             AccountType = accounttype;
+            Password = password;
             Balance = 0;
         }
 

@@ -26,15 +26,10 @@ namespace BankAccountAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("{cpf}")]
-        public async Task<ActionResult<BankClientDTO>> SearchClientByCPF(string cpf)
+        [HttpGet("me")]
+        public async Task<ActionResult<BankClientDTO>> SearchClientByCPF()
         {
-            var clientCpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (cpf != clientCpf)
-            {
-                return Unauthorized("Unauthorized access");
-            }
-
+            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(cpf);
             
             return Ok(bankClientByCpf);

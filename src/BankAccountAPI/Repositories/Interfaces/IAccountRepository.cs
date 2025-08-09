@@ -10,6 +10,7 @@ namespace BankAccountAPI.Repositories.Interfaces
     {
         Task<List<BankAccountModel>> SearchAllAccounts();
         Task<BankAccountModel> SearchAccountById(int id);
+        Task<List<BankAccountModel>> SearchAllAccountsByCpf(string cpf);
         Task<BankAccountModel> AddAccount(BankAccountModel account);  
         Task<BankAccountModel> DepositBalance(decimal deposit, int id);
         Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id);
