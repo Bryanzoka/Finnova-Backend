@@ -28,7 +28,7 @@ namespace FinnovaAPI.Services
                 audience: audience,
                 claims:
                 [
-                    new Claim(type: ClaimTypes.NameIdentifier, bankClient.Cpf),
+                    new Claim(type: ClaimTypes.NameIdentifier, bankClient.Id.ToString()),
                     new Claim(type: ClaimTypes.Name, bankClient.Name)
                 ],
                 expires: DateTime.Now.AddHours(1),

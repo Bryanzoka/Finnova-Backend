@@ -18,6 +18,13 @@ namespace FinnovaAPI.Repositories
            return await _dbContext.BankClient.ToListAsync(); 
         }
 
+        public async Task<BankClientModel> SearchClientById(int id)
+        {
+            BankClientModel clientById = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Id == id);
+
+            return clientById;
+        }
+
         public async Task<BankClientModel> SearchClientByCPF(string cpf)
         {
             BankClientModel clientByCPF = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Cpf == cpf);

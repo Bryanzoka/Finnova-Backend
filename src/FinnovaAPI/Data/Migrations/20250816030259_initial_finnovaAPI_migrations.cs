@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BankAccountAPI.Migrations
+namespace FinnovaAPI.Migrations
 {
     /// <inheritdoc />
     public partial class initial_finnovaAPI_migrations : Migration
@@ -36,6 +37,8 @@ namespace BankAccountAPI.Migrations
                 name: "clients",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     cpf = table.Column<string>(type: "VARCHAR(11)", maxLength: 11, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
@@ -51,7 +54,7 @@ namespace BankAccountAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_clients", x => x.cpf);
+                    table.PrimaryKey("PK_clients", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -59,10 +62,8 @@ namespace BankAccountAPI.Migrations
                 name: "accounts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    client_cpf = table.Column<string>(type: "VARCHAR(11)", maxLength: 11, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    id = table.Column<int>(type: "int", nullable: false),
+                    client_id = table.Column<int>(type: "int", nullable: false),
                     account_type = table.Column<int>(type: "int", nullable: false),
                     balance = table.Column<decimal>(type: "DECIMAL(10,2)", nullable: false),
                     password = table.Column<string>(type: "VARCHAR(4)", maxLength: 4, nullable: false)
@@ -75,18 +76,25 @@ namespace BankAccountAPI.Migrations
                 {
                     table.PrimaryKey("PK_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_accounts_clients_client_cpf",
-                        column: x => x.client_cpf,
+                        name: "FK_accounts_clients_id",
+                        column: x => x.id,
                         principalTable: "clients",
-                        principalColumn: "cpf",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_accounts_client_cpf",
+                name: "IX_accounts_client_id_account_type",
                 table: "accounts",
-                column: "client_cpf");
+                columns: new[] { "client_id", "account_type" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_clients_cpf",
+                table: "clients",
+                column: "cpf",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_clients_email",

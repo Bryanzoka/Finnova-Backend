@@ -25,9 +25,9 @@ namespace FinnovaAPI.Repositories
             return accountById;
         }
 
-        public async Task<List<BankAccountModel>> SearchAllAccountsByCpf(string cpf)
+        public async Task<List<BankAccountModel>> SearchAllAccountsByClientId(int clientId)
         {
-            return await _dbContext.BankAccount.Where(x => x.Cpf == cpf).ToListAsync();
+            return await _dbContext.BankAccount.Where(x => x.ClientId == clientId).ToListAsync();
         }
 
         public async Task<BankAccountModel> AddAccount(BankAccountModel account)

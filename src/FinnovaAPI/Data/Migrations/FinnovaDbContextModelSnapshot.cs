@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BankAccountAPI.Migrations
+namespace FinnovaAPI.Migrations
 {
     [DbContext(typeof(FinnovaDbContext))]
     partial class FinnovaDbContextModelSnapshot : ModelSnapshot
@@ -25,11 +25,8 @@ namespace BankAccountAPI.Migrations
             modelBuilder.Entity("FinnovaAPI.Models.BankAccountModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int")
@@ -39,11 +36,9 @@ namespace BankAccountAPI.Migrations
                         .HasColumnType("DECIMAL(10,2)")
                         .HasColumnName("balance");
 
-                    b.Property<string>("Cpf")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("VARCHAR(11)")
-                        .HasColumnName("client_cpf");
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
@@ -65,14 +60,23 @@ namespace BankAccountAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Cpf");
+                    b.HasIndex("ClientId", "AccountType")
+                        .IsUnique();
 
                     b.ToTable("accounts", (string)null);
                 });
 
             modelBuilder.Entity("FinnovaAPI.Models.BankClientModel", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Cpf")
+                        .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("VARCHAR(11)")
                         .HasColumnName("cpf");
@@ -108,7 +112,10 @@ namespace BankAccountAPI.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Cpf");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Cpf")
+                        .IsUnique();
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -153,7 +160,7 @@ namespace BankAccountAPI.Migrations
                 {
                     b.HasOne("FinnovaAPI.Models.BankClientModel", "BankClient")
                         .WithMany()
-                        .HasForeignKey("Cpf")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -10,10 +10,9 @@ namespace FinnovaAPI.Models
         [Key]
         public int Id { get; private set; }
 
-        [Required(ErrorMessage = "CPF is required")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF must contain only numbers")]
-        public string Cpf { get; private set; }
+        [Required(ErrorMessage = "Client id is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid id number")]
+        public int ClientId { get; private set; }
 
         [Required(ErrorMessage = "Account type is required")]
         [EnumDataType(typeof(EnumAccountType), ErrorMessage = "Invalid account type")]
@@ -34,10 +33,10 @@ namespace FinnovaAPI.Models
         public BankAccountModel() {}
 
         [JsonConstructor]
-        public BankAccountModel(int id, string cpf, EnumAccountType accounttype, string password)
+        public BankAccountModel(int id, int clientId, EnumAccountType accounttype, string password)
         {
             Id = id;
-            Cpf = cpf;
+            ClientId = clientId;
             AccountType = accounttype;
             Password = password;
             Balance = 0;
@@ -48,7 +47,7 @@ namespace FinnovaAPI.Models
             return new BankAccountModel
             {
                 Id = dto.Id,
-                Cpf = dto.Cpf,
+                ClientId = dto.ClientId,
                 AccountType = dto.AccountType,
                 Balance = dto.Balance
             };
@@ -58,7 +57,7 @@ namespace FinnovaAPI.Models
         {
             return new BankAccountModel
             {
-                Cpf = dto.Cpf,
+                ClientId = dto.ClientId,
                 AccountType = dto.AccountType,
             };
         }

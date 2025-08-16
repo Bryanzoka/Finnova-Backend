@@ -18,11 +18,13 @@ namespace FinnovaAPI.Data.Map
                 .HasColumnName("id");
 
             builder
-                .Property(x => x.Cpf)
+                .Property(x => x.ClientId)
                 .IsRequired()
-                .HasColumnName("client_cpf")
-                .HasColumnType("VARCHAR(11)")
-                .HasMaxLength(11);
+                .HasColumnName("client_id");
+
+            builder
+                .HasIndex(x => new { x.ClientId, x.AccountType })
+                .IsUnique();
 
             builder
                 .Property(x => x.AccountType)
@@ -57,7 +59,7 @@ namespace FinnovaAPI.Data.Map
             builder
                 .HasOne(x => x.BankClient)
                 .WithMany() 
-                .HasForeignKey(x => x.Cpf)
+                .HasForeignKey(x => x.Id)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

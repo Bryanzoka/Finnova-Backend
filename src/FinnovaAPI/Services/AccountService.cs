@@ -32,15 +32,15 @@ namespace FinnovaAPI.Services
             return BankAccountDTO.ToDTO(accountById);
         }
 
-        public async Task<List<AccountPreviewDTO>> SearchAllAccountsByCpf(string cpf)
+        public async Task<List<AccountPreviewDTO>> SearchAllAccountsByClientId(int id)
         {
-            var client = await _clientServices.SearchClientByCPF(cpf);
-            var accounts = await _accountRepository.SearchAllAccountsByCpf(cpf) ?? throw new KeyNotFoundException("Account not found with this CPF");
+            var client = await _clientServices.SearchClientById(id);
+            var accounts = await _accountRepository.SearchAllAccountsByClientId(id) ?? throw new KeyNotFoundException("Account not found with this CPF");
 
             return accounts.Select(account => new AccountPreviewDTO
             {
                 Id = account.Id,
-                Cpf = account.Cpf,
+                ClientId = account.ClientId,
                 Name = client.Name,
                 AccountType = account.AccountType
             }).ToList();
@@ -48,17 +48,17 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account)
         {
-            // Validate CPF and ensure client exists
-            await _clientServices.SearchClientByCPF(account.Cpf);
+            // Validate Client id and ensure client exists
+            await _clientServices.SearchClientById(account.ClientId);
 
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
-        public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, string clientCpf)
+        public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)
         {
             var account = await SearchAccountById(deposit.Id);
 
-            if (clientCpf != account.Cpf)
+            if (clientId != account.ClientId)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -71,11 +71,11 @@ namespace FinnovaAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit.Amount, deposit.Id));
         }
 
-        public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, string clientCpf)
+        public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId)
         {
             var account = await SearchAccountById(withdraw.Id);
 
-            if (clientCpf != account.Cpf)
+            if (clientId != account.ClientId)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -93,11 +93,11 @@ namespace FinnovaAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw.Amount, withdraw.Id));
         }
 
-        public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, string clientCpf)
+        public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, int clientId)
         {
             var accountById = await SearchAccountById(accountId);
 
-            if (accountById.Cpf != clientCpf)
+            if (accountById.ClientId != clientId)
             {
                 throw new UnauthorizedAccessException("You are not authorized to access this account");
             }
@@ -122,11 +122,11 @@ namespace FinnovaAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.TransferBalance(transfer, accountId, recipientId));
         }
 
-        public async Task<bool> DeleteAccount(int id, string clientCpf)
+        public async Task<bool> DeleteAccount(int id, int clientId)
         {
             var account = await SearchAccountById(id);
 
-            if (clientCpf != account.Cpf)
+            if (clientId != account.ClientId)
             {
                 throw new UnauthorizedAccessException("Invalid operation");
             }

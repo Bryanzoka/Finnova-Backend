@@ -24,7 +24,7 @@ namespace FinnovaAPI.Controllers
             {
                 var client = await _clientService.ValidateCredentials(loginClientDTO.Cpf, loginClientDTO.Password);
                 var token = _tokenService.GenerateToken(client);
-                return Ok(token);
+                return Ok(new { token });
             }
             catch (ArgumentException ex)
             {

@@ -11,13 +11,21 @@ namespace FinnovaAPI.Data.Map
         {
             builder.ToTable("clients");
 
-            builder.HasKey(x => x.Cpf);
+            builder.HasKey(x => x.Id);
+
+            builder
+                .Property(x => x.Id)
+                .HasColumnName("id");
 
             builder
                 .Property(x => x.Cpf)
                 .IsRequired()
                 .HasColumnType("VARCHAR(11)")
                 .HasColumnName("cpf");
+
+            builder
+                .HasIndex(x => x.Cpf)
+                .IsUnique();
 
             builder
                 .Property(x => x.Name)

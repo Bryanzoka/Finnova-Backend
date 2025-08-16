@@ -5,7 +5,7 @@ namespace FinnovaAPI.Models.DTOs.Account
     public record BankAccountDTO
     {
         public int Id { get; set; }
-        public string Cpf { get; set; }
+        public int ClientId { get; set; }
         public EnumAccountType AccountType { get; set; } 
         public decimal Balance { get; set; }
 
@@ -15,7 +15,7 @@ namespace FinnovaAPI.Models.DTOs.Account
             return new BankAccountDTO
             {
                 Id = model.Id,
-                Cpf = model.Cpf,
+                ClientId = model.ClientId,
                 AccountType = model.AccountType,
                 Balance = model.Balance
             };

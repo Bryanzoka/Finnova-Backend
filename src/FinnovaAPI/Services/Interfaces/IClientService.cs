@@ -6,6 +6,7 @@ namespace FinnovaAPI.Services.Interfaces
     public interface IClientService
     {
         Task<List<BankClientModel>> SearchAllClients();
+        Task<BankClientDTO> SearchClientById(int id);
         Task<BankClientDTO> SearchClientByCPF(string cpf);
         Task<BankClientDTO> SearchClientByEmail(string email);
         Task<BankClientDTO> SearchClientByPhone(string phone);

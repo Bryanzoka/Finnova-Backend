@@ -24,6 +24,17 @@ namespace FinnovaAPI.Services
             return await _clientRepository.SearchAllClients();
         }
 
+        public async Task<BankClientDTO> SearchClientById(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid id number");
+            }
+
+            var client = await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found");
+            return BankClientDTO.ToDTO(client);
+        }
+
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
             if (cpf.Length != 11 || !cpf.All(char.IsDigit))
