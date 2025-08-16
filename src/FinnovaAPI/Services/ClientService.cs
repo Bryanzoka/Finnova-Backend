@@ -113,6 +113,13 @@ namespace FinnovaAPI.Services
 
             var verificationCode = await _verificationCodeService.GetCodeByEmail(registerClient.Email);
 
+            //check and delete if the code has expired
+            if (DateTime.UtcNow > verificationCode.Expiration)
+            {
+                await _verificationCodeService.DeleteCode(registerClient.Email);
+                throw new InvalidOperationException("Verification code has expired");
+            }
+
             if (registerClient.Code != verificationCode.Code)
             {
                 throw new UnauthorizedAccessException("Invalid verification code");
@@ -122,6 +129,9 @@ namespace FinnovaAPI.Services
 
             client.HashPassword(_passwordHasher.HashPassword(client.Password));
             await _clientRepository.AddClient(client);
+
+            //Delete code after registering client
+            await _verificationCodeService.DeleteCode(registerClient.Email);
 
             return BankClientDTO.ToDTO(client);
         }
