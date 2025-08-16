@@ -2,6 +2,7 @@ namespace FinnovaAPI.Models.DTOs.Client
 {
     public record BankClientDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -10,6 +11,7 @@ namespace FinnovaAPI.Models.DTOs.Client
         {
             return new BankClientDTO
             {
+                Id = model.Id,
                 Name = model.Name,
                 Email = model.Email,
                 Phone = model.Phone

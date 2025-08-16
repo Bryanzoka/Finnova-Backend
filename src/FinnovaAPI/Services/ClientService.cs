@@ -126,9 +126,9 @@ namespace FinnovaAPI.Services
             return BankClientDTO.ToDTO(client);
         }
 
-        public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf)
+        public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, int id)
         {
-            var updatedClient = BankClientModel.ToModel(await SearchClientByCPF(cpf));
+            var updatedClient = BankClientModel.ToModel(await SearchClientById(id));
 
             if (client.Password != null)
             {
@@ -142,7 +142,7 @@ namespace FinnovaAPI.Services
                 client.Password ?? updatedClient.Password
             );
 
-            await _clientRepository.UpdateClient(updatedClient, cpf);
+            await _clientRepository.UpdateClient(updatedClient, id);
             return BankClientDTO.ToDTO(updatedClient);
         }
 
@@ -158,11 +158,11 @@ namespace FinnovaAPI.Services
             return client;
         }
 
-        public async Task<bool> DeleteClient(string cpf)
+        public async Task<bool> DeleteClient(int id)
         {
-            await SearchClientByCPF(cpf);
+            await SearchClientById(id);
 
-            return await _clientRepository.DeleteClient(cpf);
+            return await _clientRepository.DeleteClient(id);
         }
 
         private async Task<bool> ClientExistsByCPF(string cpf)

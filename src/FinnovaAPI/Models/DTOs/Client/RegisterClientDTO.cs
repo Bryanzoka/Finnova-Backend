@@ -26,6 +26,10 @@ namespace FinnovaAPI.Models.DTOs.Client
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Confirm the password")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string Password_confirmation { get; set; }
+
         [Required(ErrorMessage = "Code is required")]
         [StringLength(6, ErrorMessage = "Code must be only 6 characters long")]
         public string Code { get; set; }

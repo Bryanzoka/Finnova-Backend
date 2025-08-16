@@ -12,8 +12,8 @@ namespace FinnovaAPI.Services.Interfaces
         Task<BankClientDTO> SearchClientByPhone(string phone);
         Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client);
         Task<BankClientDTO> AddClient(RegisterClientDTO client);
-        Task<BankClientDTO> UpdateClient(UpdateClientDTO client, string cpf);
+        Task<BankClientDTO> UpdateClient(UpdateClientDTO client, int id);
         Task<BankClientModel> ValidateCredentials(string cpf, string password);
-        Task<bool> DeleteClient(string cpf);
+        Task<bool> DeleteClient(int id);
     }
 }

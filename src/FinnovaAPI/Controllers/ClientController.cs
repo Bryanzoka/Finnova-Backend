@@ -4,6 +4,7 @@ using FinnovaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using FinnovaAPI.Models.DTOs.Client;
+using FinnovaAPI.Models.DTOs.Account;
 
 namespace FinnovaAPI.Controllers
 {
@@ -29,8 +30,17 @@ namespace FinnovaAPI.Controllers
         [HttpGet("me")]
         public async Task<ActionResult<BankClientDTO>> SearchClientByCPF()
         {
-            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(cpf);
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            BankClientDTO bankClientByCpf = await _clientService.SearchClientById(int.Parse(id));
+            
+            return Ok(bankClientByCpf);
+        }
+
+        [Authorize]
+        [HttpPost("search")]
+        public async Task<ActionResult<BankClientDTO>> SearchClientByCPF([FromBody] CpfRequest recipient)
+        {
+            BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(recipient.Cpf);
             
             return Ok(bankClientByCpf);
         }
@@ -72,14 +82,14 @@ namespace FinnovaAPI.Controllers
         }
         
         [Authorize]
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)
         {
-            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             try
             {
-                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, cpf);
+                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, int.Parse(id));
                 return Ok(bankClient);
             }
             catch (ArgumentException ex)
@@ -96,11 +106,11 @@ namespace FinnovaAPI.Controllers
         [HttpDelete]
         public async Task<ActionResult<BankClientModel>> DeleteClient()
         {
-            var cpf = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             try
             {
-                bool clientDeleted = await _clientService.DeleteClient(cpf);
+                bool clientDeleted = await _clientService.DeleteClient(int.Parse(id));
                 return Ok(clientDeleted);
             }
             catch (KeyNotFoundException ex)

@@ -1,3 +1,5 @@
 src/FinnovaAPI/appsettings.json
 src/FinnovaAPI/bin/
 src/FinnovaAPI/obj/
+.vs
+.vscode
