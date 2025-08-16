@@ -30,19 +30,39 @@ namespace FinnovaAPI.Controllers
         [HttpGet("me")]
         public async Task<ActionResult<BankClientDTO>> SearchClientByCPF()
         {
-            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            BankClientDTO bankClientByCpf = await _clientService.SearchClientById(int.Parse(id));
-            
-            return Ok(bankClientByCpf);
+            try
+            {
+                var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                BankClientDTO bankClientByCpf = await _clientService.SearchClientById(int.Parse(id));
+                return Ok(bankClientByCpf);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [Authorize]
         [HttpPost("search")]
         public async Task<ActionResult<BankClientDTO>> SearchClientByCPF([FromBody] CpfRequest recipient)
         {
-            BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(recipient.Cpf);
-            
-            return Ok(bankClientByCpf);
+            try
+            {
+                BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(recipient.Cpf);
+                return Ok(bankClientByCpf);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost("verify")]
