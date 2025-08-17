@@ -28,7 +28,7 @@ namespace FinnovaAPI.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public async Task<ActionResult<BankClientDTO>> SearchClientByCPF()
+        public async Task<ActionResult<BankClientDTO>> SearchClientById()
         {
             try
             {
