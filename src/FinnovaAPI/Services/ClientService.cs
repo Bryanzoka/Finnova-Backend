@@ -3,6 +3,7 @@ using FinnovaAPI.Models;
 using FinnovaAPI.Services.Interfaces;
 using FinnovaAPI.Models.DTOs.Client;
 using FinnovaAPI.Repositories.Interfaces;
+using FinnovaAPI.Helpers;
 
 namespace FinnovaAPI.Services
 {
@@ -26,44 +27,28 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientById(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid id number");
-            }
-
+            ClientValidator.ValiteId(id);
             var client = await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
 
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
-            if (cpf.Length != 11 || !cpf.All(char.IsDigit))
-            {
-                throw new ArgumentException("Invalid CPF");
-            }
-
+            ClientValidator.ValidateCpf(cpf);
             var client = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
 
         public async Task<BankClientDTO> SearchClientByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email) || !MailAddress.TryCreate(email, out _))
-            {
-                throw new ArgumentException("Invalid email format");
-            }
-            
+            ClientValidator.ValidateEmail(email);
             var client = await _clientRepository.SearchClientByEmail(email) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
 
         public async Task<BankClientDTO> SearchClientByPhone(string phone)
         {
-            if (phone.Length < 11 || phone.Length > 13 || !phone.All(char.IsDigit))
-            {
-                throw new ArgumentException("Phone number must contain only 11 to 13 digits");
-            }
-
+            ClientValidator.ValidatePhone(phone);
             var client = await _clientRepository.SearchClientByPhone(phone) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
