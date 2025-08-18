@@ -55,17 +55,21 @@ namespace FinnovaAPI.Services
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
         {
-            if (await ClientExistsByCPF(client.Cpf))
+            ClientValidator.ValidateCpf(client.Cpf);
+            ClientValidator.ValidateEmail(client.Email);
+            ClientValidator.ValidatePhone(client.Phone);
+
+            if (await ClientExists(client.Cpf, _clientRepository.SearchClientByCPF))
             {
                 throw new InvalidOperationException("Client with this CPF already exists");
             }
 
-            if (await ClientExistsByEmail(client.Email))
+            if (await ClientExists(client.Email, _clientRepository.SearchClientByEmail))
             {
                 throw new InvalidOperationException("Client with this email already exists");
             }
 
-            if (await ClientExistsByPhone(client.Phone))
+            if (await ClientExists(client.Phone, _clientRepository.SearchClientByPhone))
             {
                 throw new InvalidOperationException("Client with this phone already exists");
             }
@@ -81,17 +85,21 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> AddClient(RegisterClientDTO registerClient)
         {
-            if (await ClientExistsByCPF(registerClient.Cpf))
+            ClientValidator.ValidateCpf(registerClient.Cpf);
+            ClientValidator.ValidateEmail(registerClient.Email);
+            ClientValidator.ValidatePhone(registerClient.Phone);
+
+            if (await ClientExists(registerClient.Cpf, _clientRepository.SearchClientByCPF))
             {
                 throw new InvalidOperationException("Client with this CPF already exists");
             }
 
-            if (await ClientExistsByEmail(registerClient.Email))
+            if (await ClientExists(registerClient.Email, _clientRepository.SearchClientByEmail))
             {
                 throw new InvalidOperationException("Client with this email already exists");
             }
 
-            if (await ClientExistsByPhone(registerClient.Phone))
+            if (await ClientExists(registerClient.Phone, _clientRepository.SearchClientByPhone))
             {
                 throw new InvalidOperationException("Client with this phone already exists");
             }
@@ -160,50 +168,16 @@ namespace FinnovaAPI.Services
             return await _clientRepository.DeleteClient(id);
         }
 
-        private async Task<bool> ClientExistsByCPF(string cpf)
+        private static async Task<bool> ClientExists(string value, Func<string, Task<BankClientModel>> searchFunc)
         {
-            try
-            {
-                await SearchClientByCPF(cpf);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-        }
-
-        private async Task<bool> ClientExistsByEmail(string email)
-        {
-            try
-            {
-                await SearchClientByEmail(email);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-        }
-
-        private async Task<bool> ClientExistsByPhone(string phone)
-        {
-            try
-            {
-                await SearchClientByPhone(phone);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            var client = await searchFunc(value);
+            return client != null;
         }
 
         private string GenerateRandomCode()
         {
             var random = new Random();
-            string code = random.Next(100000, 999999).ToString();
-            return code;
+            return random.Next(100000, 999999).ToString();
         }
     }
 }
