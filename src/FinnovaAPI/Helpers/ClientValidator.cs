@@ -4,7 +4,7 @@ namespace FinnovaAPI.Helpers
 {
     public static class ClientValidator
     {
-        public static void ValiteId(int id)
+        public static void ValidateId(int id)
         { 
             if (id <= 0)
             {

@@ -16,7 +16,7 @@ namespace FinnovaAPI.Services
         public async Task SendVerificationCode(string toEmail, string verificationCode)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Bank", _configuration["EmailSettings:From"]));
+            emailMessage.From.Add(new MailboxAddress("Finnova", _configuration["EmailSettings:From"]));
             emailMessage.To.Add(MailboxAddress.Parse(toEmail));
             emailMessage.Subject = "Email verification code";
             

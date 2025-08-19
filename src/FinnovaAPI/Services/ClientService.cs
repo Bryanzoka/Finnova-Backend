@@ -27,7 +27,7 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientById(int id)
         {
-            ClientValidator.ValiteId(id);
+            ClientValidator.ValidateId(id);
             var client = await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found");
             return BankClientDTO.ToDTO(client);
         }
