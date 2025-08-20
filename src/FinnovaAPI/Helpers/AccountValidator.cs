@@ -12,7 +12,7 @@ namespace FinnovaAPI.Helpers
 
         public static void ValidateAmount(decimal amount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount, "amount must be greater than 0");
         }
     }
 }

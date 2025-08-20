@@ -100,7 +100,7 @@ namespace FinnovaAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-
+        
         [Authorize]
         [HttpPut("me")]
         public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)

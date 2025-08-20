@@ -32,7 +32,6 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
-                //TODO: validate if the account.ClientId is same the id of the token
                 var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var bankAccountById = await _accountService.GetAuthenticatedClientAccount(id, int.Parse(clientId));
                 return Ok(bankAccountById);
@@ -88,6 +87,8 @@ namespace FinnovaAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        //TODO: create a http put or patch to update the account password
 
         [Authorize]
         [HttpPatch("deposit")]

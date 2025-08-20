@@ -24,7 +24,6 @@ namespace FinnovaAPI.Services
         public async Task<BankAccountDTO> GetAuthenticatedClientAccount(int id, int clientId)
         {
             AccountValidator.ValidateId(id);
-
             BankAccountModel account = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
 
             if (clientId != account.ClientId)
@@ -37,11 +36,7 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> SearchAccountById(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException($"The ID: {id} is invalid");
-            }
-
+            AccountValidator.ValidateId(id);
             BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
 
             return BankAccountDTO.ToDTO(accountById);
@@ -50,7 +45,7 @@ namespace FinnovaAPI.Services
         public async Task<List<AccountPreviewDTO>> SearchAllAccountsByClientId(int id)
         {
             var client = await _clientServices.SearchClientById(id);
-            var accounts = await _accountRepository.SearchAllAccountsByClientId(id) ?? throw new KeyNotFoundException("Account not found with this CPF");
+            var accounts = await _accountRepository.SearchAllAccountsByClientId(id) ?? throw new KeyNotFoundException("Account not found with this client id");
 
             return accounts.Select(account => new AccountPreviewDTO
             {
@@ -71,34 +66,16 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)
         {
-            var account = await SearchAccountById(deposit.Id);
-
-            if (clientId != account.ClientId)
-            {
-                throw new UnauthorizedAccessException("You are not authorized to access this account");
-            }
-
-            if (deposit.Amount <= 0)
-            { 
-                throw new ArgumentOutOfRangeException("Deposit amount must be greater than 0");
-            }
+            await GetAuthenticatedClientAccount(deposit.Id, clientId);
+            AccountValidator.ValidateAmount(deposit.Amount);
 
             return BankAccountDTO.ToDTO(await _accountRepository.DepositBalance(deposit.Amount, deposit.Id));
         }
 
         public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId)
         {
-            var account = await SearchAccountById(withdraw.Id);
-
-            if (clientId != account.ClientId)
-            {
-                throw new UnauthorizedAccessException("You are not authorized to access this account");
-            }
-
-            if (withdraw.Amount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Withdraw amount must be greater than 0");
-            }
+            var account = await GetAuthenticatedClientAccount(withdraw.Id, clientId);
+            AccountValidator.ValidateAmount(withdraw.Amount);
 
             if (account.Balance < withdraw.Amount)
             { 
@@ -110,26 +87,18 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, int clientId)
         {
-            var accountById = await SearchAccountById(accountId);
-
-            if (accountById.ClientId != clientId)
-            {
-                throw new UnauthorizedAccessException("You are not authorized to access this account");
-            }
+            var sourceAccount = await GetAuthenticatedClientAccount(accountId, clientId);
 
             await SearchAccountById(recipientId);
 
-            if (accountId == recipientId)
+            if (sourceAccount.Id == recipientId)
             {
                 throw new ArgumentException("Source and destination account IDs must be different");
             }
 
-            if (transfer <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Transfer amount must be greater than 0");
-            }
+            AccountValidator.ValidateAmount(transfer);
 
-            if (accountById.Balance < transfer)
+            if (sourceAccount.Balance < transfer)
             {
                 throw new InvalidOperationException("Insufficient balance");
             }
@@ -139,12 +108,7 @@ namespace FinnovaAPI.Services
 
         public async Task<bool> DeleteAccount(int id, int clientId)
         {
-            var account = await SearchAccountById(id);
-
-            if (clientId != account.ClientId)
-            {
-                throw new UnauthorizedAccessException("Invalid operation");
-            }
+            await GetAuthenticatedClientAccount(id, clientId);
 
             return await _accountRepository.DeleteAccount(id);
         }
