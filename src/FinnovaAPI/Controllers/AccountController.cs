@@ -19,7 +19,7 @@ namespace FinnovaAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BankAccountModel>>> SearchAllClients()
+        public async Task<ActionResult<List<BankAccountModel>>> SearchAllAccounts()
         {
             List<BankAccountModel> bankAccounts = await _accountService.SearchAllAccounts();
             List<BankAccountDTO> bankAccountsDTO = bankAccounts.Select(BankAccountDTO.ToDTO).ToList();
@@ -32,8 +32,9 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
+                //TODO: validate if the account.ClientId is same the id of the token
                 var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var bankAccountById = await _accountService.SearchAccountById(id);
+                var bankAccountById = await _accountService.GetAuthenticatedClientAccount(id, int.Parse(clientId));
                 return Ok(bankAccountById);
             }
             catch (ArgumentException ex)
@@ -43,7 +44,11 @@ namespace FinnovaAPI.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }      
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
 
         [Authorize]

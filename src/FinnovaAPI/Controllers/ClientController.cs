@@ -100,9 +100,9 @@ namespace FinnovaAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-        
+
         [Authorize]
-        [HttpPut("update")]
+        [HttpPut("me")]
         public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)
         {
             var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;

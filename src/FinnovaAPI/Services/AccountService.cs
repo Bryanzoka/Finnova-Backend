@@ -2,6 +2,7 @@ using FinnovaAPI.Models;
 using FinnovaAPI.Services.Interfaces;
 using FinnovaAPI.Models.DTOs.Account;
 using FinnovaAPI.Repositories.Interfaces;
+using FinnovaAPI.Helpers;
 
 namespace FinnovaAPI.Services
 {
@@ -18,6 +19,20 @@ namespace FinnovaAPI.Services
         public async Task<List<BankAccountModel>> SearchAllAccounts()
         {
             return await _accountRepository.SearchAllAccounts();
+        }
+
+        public async Task<BankAccountDTO> GetAuthenticatedClientAccount(int id, int clientId)
+        {
+            AccountValidator.ValidateId(id);
+
+            BankAccountModel account = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
+
+            if (clientId != account.ClientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to acess this account");
+            }
+
+            return BankAccountDTO.ToDTO(account);
         }
 
         public async Task<BankAccountDTO> SearchAccountById(int id)
