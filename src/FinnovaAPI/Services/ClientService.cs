@@ -34,23 +34,17 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
-            ClientValidator.ValidateCpf(cpf);
-            var client = await _clientRepository.SearchClientByCPF(cpf) ?? throw new KeyNotFoundException("Client not found");
-            return BankClientDTO.ToDTO(client);
+            return await ValidateAndSearchClient(cpf, ClientValidator.ValidateCpf, _clientRepository.SearchClientByCPF);
         }
 
         public async Task<BankClientDTO> SearchClientByEmail(string email)
         {
-            ClientValidator.ValidateEmail(email);
-            var client = await _clientRepository.SearchClientByEmail(email) ?? throw new KeyNotFoundException("Client not found");
-            return BankClientDTO.ToDTO(client);
+            return await ValidateAndSearchClient(email, ClientValidator.ValidateEmail, _clientRepository.SearchClientByEmail);
         }
 
         public async Task<BankClientDTO> SearchClientByPhone(string phone)
         {
-            ClientValidator.ValidatePhone(phone);
-            var client = await _clientRepository.SearchClientByPhone(phone) ?? throw new KeyNotFoundException("Client not found");
-            return BankClientDTO.ToDTO(client);
+            return await ValidateAndSearchClient(phone, ClientValidator.ValidateEmail, _clientRepository.SearchClientByPhone);
         }
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
@@ -131,7 +125,7 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> UpdateClient(UpdateClientDTO client, int id)
         {
-            var updatedClient = BankClientModel.ToModel(await SearchClientById(id));
+            var updatedClient = await GetClientModelById(id);
 
             if (client.Password != null)
             {
@@ -145,8 +139,7 @@ namespace FinnovaAPI.Services
                 client.Password ?? updatedClient.Password
             );
 
-            await _clientRepository.UpdateClient(updatedClient, id);
-            return BankClientDTO.ToDTO(updatedClient);
+            return BankClientDTO.ToDTO(await _clientRepository.UpdateClient(updatedClient, id));
         }
 
         public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
@@ -163,15 +156,25 @@ namespace FinnovaAPI.Services
 
         public async Task<bool> DeleteClient(int id)
         {
-            await SearchClientById(id);
-
+            await GetClientModelById(id);
             return await _clientRepository.DeleteClient(id);
+        }
+
+        private async Task<BankClientModel> GetClientModelById(int id)
+        {
+            ClientValidator.ValidateId(id);
+            return await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found with this Id");
+        }
+
+        private static async Task<BankClientDTO> ValidateAndSearchClient(string value, Action<string> validate, Func<string, Task<BankClientModel>> searchFunc)
+        {
+            validate(value);
+            return BankClientDTO.ToDTO(await searchFunc(value));
         }
 
         private static async Task<bool> ClientExists(string value, Func<string, Task<BankClientModel>> searchFunc)
         {
-            var client = await searchFunc(value);
-            return client != null;
+            return await searchFunc(value) != null;
         }
 
         private string GenerateRandomCode()
