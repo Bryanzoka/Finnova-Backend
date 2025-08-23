@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinnovaAPI.Migrations
 {
     [DbContext(typeof(FinnovaDbContext))]
-    [Migration("20250816030259_initial_finnovaAPI_migrations")]
-    partial class initial_finnovaAPI_migrations
+    [Migration("20250823042040_initial_finnova_migrations")]
+    partial class initial_finnova_migrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,8 +28,11 @@ namespace FinnovaAPI.Migrations
             modelBuilder.Entity("FinnovaAPI.Models.BankAccountModel", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int")
@@ -163,7 +166,7 @@ namespace FinnovaAPI.Migrations
                 {
                     b.HasOne("FinnovaAPI.Models.BankClientModel", "BankClient")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

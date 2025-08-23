@@ -32,8 +32,8 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
-                var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var bankAccountById = await _accountService.GetAuthenticatedClientAccount(id, int.Parse(clientId));
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var bankAccountById = await _accountService.GetAuthenticatedClientAccount(id, clientId);
                 return Ok(bankAccountById);
             }
             catch (ArgumentException ex)
@@ -72,10 +72,11 @@ namespace FinnovaAPI.Controllers
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
-        {    
+        {
             try
             {
-                var bankAccount = await _accountService.AddAccount(newBankAccountDTO);
+                int clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var bankAccount = await _accountService.AddAccount(newBankAccountDTO, clientId);
                 return Ok(bankAccount);
             }
             catch (ArgumentException ex)
@@ -85,6 +86,10 @@ namespace FinnovaAPI.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
             }
         }
 
@@ -97,8 +102,8 @@ namespace FinnovaAPI.Controllers
             try
             {
                 //Client id comes as a string of the token
-                var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var account = await _accountService.DepositBalance(deposit, int.Parse(clientId));
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var account = await _accountService.DepositBalance(deposit, clientId);
                 return Ok(account);
             }
             catch (KeyNotFoundException ex)
@@ -121,8 +126,8 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
-                var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw, int.Parse(clientId));
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -145,8 +150,8 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
-                var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer.Amount, transfer.SenderAccountId, transfer.RecipientId, int.Parse(clientId));
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer.Amount, transfer.SenderAccountId, transfer.RecipientId, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -178,8 +183,8 @@ namespace FinnovaAPI.Controllers
         {
             try
             {
-                var clientId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                bool accountDeleted = await _accountService.DeleteAccount(id, int.Parse(clientId));
+                var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                bool accountDeleted = await _accountService.DeleteAccount(id, clientId);
                 return Ok(accountDeleted);
             }
             catch (UnauthorizedAccessException ex)

@@ -56,8 +56,13 @@ namespace FinnovaAPI.Services
             }).ToList();
         }
 
-        public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account)
+        public async Task<BankAccountDTO> AddAccount(CreateAccountDTO account, int clientId)
         {
+            if (account.ClientId != clientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to create an account for this client");
+            }
+
             // Validate Client id and ensure client exists
             await _clientServices.SearchClientById(account.ClientId);
 

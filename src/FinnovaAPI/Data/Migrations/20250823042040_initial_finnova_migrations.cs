@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinnovaAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class initial_finnovaAPI_migrations : Migration
+    public partial class initial_finnova_migrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,7 +62,8 @@ namespace FinnovaAPI.Migrations
                 name: "accounts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     account_type = table.Column<int>(type: "int", nullable: false),
                     balance = table.Column<decimal>(type: "DECIMAL(10,2)", nullable: false),
@@ -76,8 +77,8 @@ namespace FinnovaAPI.Migrations
                 {
                     table.PrimaryKey("PK_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_accounts_clients_id",
-                        column: x => x.id,
+                        name: "FK_accounts_clients_client_id",
+                        column: x => x.client_id,
                         principalTable: "clients",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);

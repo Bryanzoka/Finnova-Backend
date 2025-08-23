@@ -25,8 +25,11 @@ namespace FinnovaAPI.Migrations
             modelBuilder.Entity("FinnovaAPI.Models.BankAccountModel", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int")
@@ -160,7 +163,7 @@ namespace FinnovaAPI.Migrations
                 {
                     b.HasOne("FinnovaAPI.Models.BankClientModel", "BankClient")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

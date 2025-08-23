@@ -59,6 +59,7 @@ namespace FinnovaAPI.Models
             {
                 ClientId = dto.ClientId,
                 AccountType = dto.AccountType,
+                Password = dto.Password
             };
         }
 

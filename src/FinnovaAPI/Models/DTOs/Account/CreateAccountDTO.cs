@@ -12,5 +12,10 @@ namespace FinnovaAPI.Models.DTOs.Account
         [Required(ErrorMessage = "A Account Type is required")]
         [EnumDataType(typeof(EnumAccountType), ErrorMessage = "Invalid account type")]
         public EnumAccountType AccountType { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(4, MinimumLength = 4, ErrorMessage = "Password must be 4 digits long")]
+        [RegularExpression(@"^\d{4}$", ErrorMessage = "Password must contain only numbers")]
+        public string Password { get; set; }
     }
 }

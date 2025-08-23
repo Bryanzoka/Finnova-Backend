@@ -13,6 +13,7 @@ namespace FinnovaAPI.Services
         private readonly IClientRepository _clientRepository;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IVerificationCodeService _verificationCodeService;
+        private static readonly Random _random = new Random();
 
         public ClientService(IClientRepository clientRepository, IPasswordHasherService passwordHasher, IVerificationCodeService verificationCodeService)
         {
@@ -171,8 +172,7 @@ namespace FinnovaAPI.Services
 
         private string GenerateRandomCode()
         {
-            var random = new Random();
-            return random.Next(100000, 999999).ToString();
+            return _random.Next(100000, 999999).ToString();
         }
     }
 }

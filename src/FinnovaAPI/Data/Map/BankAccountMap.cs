@@ -59,7 +59,7 @@ namespace FinnovaAPI.Data.Map
             builder
                 .HasOne(x => x.BankClient)
                 .WithMany() 
-                .HasForeignKey(x => x.Id)
+                .HasForeignKey(x => x.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
