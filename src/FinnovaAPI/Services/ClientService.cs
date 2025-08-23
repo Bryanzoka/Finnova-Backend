@@ -4,6 +4,7 @@ using FinnovaAPI.Services.Interfaces;
 using FinnovaAPI.Models.DTOs.Client;
 using FinnovaAPI.Repositories.Interfaces;
 using FinnovaAPI.Helpers;
+using FinnovaAPI.Models.DTOs;
 
 namespace FinnovaAPI.Services
 {
@@ -27,9 +28,7 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientById(int id)
         {
-            ClientValidator.ValidateId(id);
-            var client = await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found");
-            return BankClientDTO.ToDTO(client);
+            return BankClientDTO.ToDTO(await GetClientModelById(id));
         }
 
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
@@ -49,24 +48,8 @@ namespace FinnovaAPI.Services
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
         {
-            ClientValidator.ValidateCpf(client.Cpf);
-            ClientValidator.ValidateEmail(client.Email);
-            ClientValidator.ValidatePhone(client.Phone);
-
-            if (await ClientExists(client.Cpf, _clientRepository.SearchClientByCPF))
-            {
-                throw new InvalidOperationException("Client with this CPF already exists");
-            }
-
-            if (await ClientExists(client.Email, _clientRepository.SearchClientByEmail))
-            {
-                throw new InvalidOperationException("Client with this email already exists");
-            }
-
-            if (await ClientExists(client.Phone, _clientRepository.SearchClientByPhone))
-            {
-                throw new InvalidOperationException("Client with this phone already exists");
-            }
+            ValidateClientInfoFormat(client);
+            await EnsureClientInfoIsUnique(client);
 
             string code = GenerateRandomCode();
 
@@ -79,24 +62,8 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> AddClient(RegisterClientDTO registerClient)
         {
-            ClientValidator.ValidateCpf(registerClient.Cpf);
-            ClientValidator.ValidateEmail(registerClient.Email);
-            ClientValidator.ValidatePhone(registerClient.Phone);
-
-            if (await ClientExists(registerClient.Cpf, _clientRepository.SearchClientByCPF))
-            {
-                throw new InvalidOperationException("Client with this CPF already exists");
-            }
-
-            if (await ClientExists(registerClient.Email, _clientRepository.SearchClientByEmail))
-            {
-                throw new InvalidOperationException("Client with this email already exists");
-            }
-
-            if (await ClientExists(registerClient.Phone, _clientRepository.SearchClientByPhone))
-            {
-                throw new InvalidOperationException("Client with this phone already exists");
-            }
+            ValidateClientInfoFormat(registerClient);
+            await EnsureClientInfoIsUnique(registerClient);
 
             var verificationCode = await _verificationCodeService.GetCodeByEmail(registerClient.Email);
 
@@ -163,7 +130,32 @@ namespace FinnovaAPI.Services
         private async Task<BankClientModel> GetClientModelById(int id)
         {
             ClientValidator.ValidateId(id);
-            return await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found with this Id");
+            return await _clientRepository.SearchClientById(id) ?? throw new KeyNotFoundException("Client not found with this id");
+        }
+
+        private async Task EnsureClientInfoIsUnique(IClientInfo client)
+        { 
+            if (await ClientExists(client.Cpf, _clientRepository.SearchClientByCPF))
+            {
+                throw new InvalidOperationException("Client with this CPF already exists");
+            }
+
+            if (await ClientExists(client.Email, _clientRepository.SearchClientByEmail))
+            {
+                throw new InvalidOperationException("Client with this email already exists");
+            }
+
+            if (await ClientExists(client.Phone, _clientRepository.SearchClientByPhone))
+            {
+                throw new InvalidOperationException("Client with this phone already exists");
+            }
+        }
+
+        private void ValidateClientInfoFormat(IClientInfo client)
+        { 
+            ClientValidator.ValidateCpf(client.Cpf);
+            ClientValidator.ValidateEmail(client.Email);
+            ClientValidator.ValidatePhone(client.Phone);
         }
 
         private static async Task<BankClientDTO> ValidateAndSearchClient(string value, Action<string> validate, Func<string, Task<BankClientModel>> searchFunc)
