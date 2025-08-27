@@ -65,12 +65,27 @@ namespace FinnovaAPI.Models
 
         public void Deposit(decimal amount)
         {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Amount must be greater than 0");
+            }
+
             Balance += amount;
             LastTransactionAt = DateTime.UtcNow;
         }
 
         public void Withdraw(decimal amount)
-        {
+        {   
+            if (amount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Amount must be greater than 0");
+            }
+
+            if (amount > Balance)
+            {
+                throw new InvalidOperationException("Insufficient balance");
+            }
+
             Balance -= amount;
             LastTransactionAt = DateTime.UtcNow;
         }

@@ -12,7 +12,7 @@ namespace FinnovaAPI.Services.Interfaces
         Task<BankAccountDTO> AddAccount(CreateAccountDTO account, int clientId);  
         Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId);
         Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId);
-        Task<BankAccountDTO> TransferBalance(decimal transfer, int accountId, int recipientId, int clientId);
+        Task<BankAccountDTO> TransferBalance(TransferDTO transfer, int clientId);
         Task<bool> DeleteAccount(int id, int clientId);
     }
 }

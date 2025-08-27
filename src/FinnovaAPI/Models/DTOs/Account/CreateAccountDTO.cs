@@ -1,10 +1,12 @@
 using FinnovaAPI.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FinnovaAPI.Models.DTOs.Account
 {
     public record CreateAccountDTO
     {
+        [JsonIgnore]
         [Required(ErrorMessage = "Client id is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Invalid id number")]
         public int ClientId { get; set; }

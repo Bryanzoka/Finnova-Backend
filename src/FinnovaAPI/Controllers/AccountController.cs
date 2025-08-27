@@ -151,7 +151,7 @@ namespace FinnovaAPI.Controllers
             try
             {
                 var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer.Amount, transfer.SenderAccountId, transfer.RecipientId, clientId);
+                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)

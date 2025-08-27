@@ -38,40 +38,12 @@ namespace FinnovaAPI.Repositories
             return account;
         }
 
-        public async Task<BankAccountModel> DepositBalance(decimal deposit, int id)
+        public async Task<BankAccountModel> UpdateBalance(BankAccountModel account)
         {
-            BankAccountModel accountById = await SearchAccountById(id);
-            accountById.Deposit(deposit);
-
-            _dbContext.BankAccount.Update(accountById);
+            _dbContext.BankAccount.Update(account);
             await _dbContext.SaveChangesAsync();
 
-            return accountById;
-        }
-
-        public async Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id)
-        {
-            BankAccountModel accountById = await SearchAccountById(id);
-            accountById.Withdraw(withdraw);
-
-            _dbContext.BankAccount.Update(accountById);
-            await _dbContext.SaveChangesAsync();
-
-            return accountById;
-        }
-
-        public async Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId)
-        {
-            BankAccountModel accountById = await SearchAccountById(accountId);
-            BankAccountModel recipientById = await SearchAccountById(recipientId);
-            accountById.Withdraw(transfer);
-            recipientById.Deposit(transfer);
-
-            _dbContext.BankAccount.Update(accountById);
-            _dbContext.BankAccount.Update(recipientById);
-            await _dbContext.SaveChangesAsync();
-
-            return accountById;
+            return account;
         }
 
         public async Task<bool> DeleteAccount(BankAccountModel account)

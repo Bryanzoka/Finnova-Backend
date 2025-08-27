@@ -8,9 +8,7 @@ namespace FinnovaAPI.Repositories.Interfaces
         Task<BankAccountModel> SearchAccountById(int id);
         Task<List<BankAccountModel>> SearchAllAccountsByClientId(int id);
         Task<BankAccountModel> AddAccount(BankAccountModel account);  
-        Task<BankAccountModel> DepositBalance(decimal deposit, int id);
-        Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id);
-        Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId);
+        Task<BankAccountModel> UpdateBalance(BankAccountModel account);
         Task<bool> DeleteAccount(BankAccountModel account);
     }
 }
