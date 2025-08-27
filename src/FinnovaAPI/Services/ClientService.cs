@@ -13,7 +13,6 @@ namespace FinnovaAPI.Services
         private readonly IClientRepository _clientRepository;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IVerificationCodeService _verificationCodeService;
-        private static readonly Random _random = new Random();
 
         public ClientService(IClientRepository clientRepository, IPasswordHasherService passwordHasher, IVerificationCodeService verificationCodeService)
         {
@@ -44,7 +43,7 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientByPhone(string phone)
         {
-            return await ValidateAndSearchClient(phone, ClientValidator.ValidateEmail, _clientRepository.SearchClientByPhone);
+            return await ValidateAndSearchClient(phone, ClientValidator.ValidatePhone, _clientRepository.SearchClientByPhone);
         }
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
@@ -52,11 +51,7 @@ namespace FinnovaAPI.Services
             ValidateClientInfoFormat(client);
             await EnsureClientInfoIsUnique(client);
 
-            string code = GenerateRandomCode();
-
-            var verificationCode = new ClientVerificationCodeModel(client.Email, code);
-
-            await _verificationCodeService.SendAndSaveCode(verificationCode);
+            await _verificationCodeService.SendAndSaveCode(client.Email);
 
             return client;
         }
@@ -159,7 +154,7 @@ namespace FinnovaAPI.Services
             ClientValidator.ValidatePhone(client.Phone);
         }
 
-        private static async Task<BankClientDTO> ValidateAndSearchClient(string value, Action<string> validate, Func<string, Task<BankClientModel>> searchFunc)
+        private async Task<BankClientDTO> ValidateAndSearchClient(string value, Action<string> validate, Func<string, Task<BankClientModel>> searchFunc)
         {
             validate(value);
             return BankClientDTO.ToDTO(await searchFunc(value));
@@ -168,11 +163,6 @@ namespace FinnovaAPI.Services
         private static async Task<bool> ClientExists(string value, Func<string, Task<BankClientModel>> searchFunc)
         {
             return await searchFunc(value) != null;
-        }
-
-        private string GenerateRandomCode()
-        {
-            return _random.Next(100000, 999999).ToString();
         }
     }
 }

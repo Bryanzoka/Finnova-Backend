@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using System.Security.Cryptography;
 using FinnovaAPI.Models;
 using FinnovaAPI.Repositories.Interfaces;
 using FinnovaAPI.Services.Interfaces;
@@ -28,20 +29,19 @@ namespace FinnovaAPI.Services
             return code;
         }
 
-        public async Task SendAndSaveCode(ClientVerificationCodeModel code)
+        public async Task SendAndSaveCode(string email)
         {
-            if (string.IsNullOrEmpty(code.Code) || code.Code.Length != 6)
+            var code = GenerateRandomCode();
+
+            if (await CodeExistsByEmail(email))
             {
-                throw new ArgumentException("Invalid code format");
+                await DeleteCode(email);
             }
 
-            if (await CodeExistsByEmail(code.Email))
-            {
-                await DeleteCode(code.Email);
-            }
-
-            await _emailService.SendVerificationCode(code.Email, code.Code);
-            await _verificationCodeRepository.SaveCode(code);
+            await _emailService.SendVerificationCode(email, code);
+            
+            var verificationCode = new ClientVerificationCodeModel(email, code);
+            await _verificationCodeRepository.SaveCode(verificationCode);
         }
 
         public async Task<bool> DeleteCode(string email)
@@ -62,6 +62,11 @@ namespace FinnovaAPI.Services
             {
                 return false;
             }
+        }
+
+        private string GenerateRandomCode()
+        {
+            return RandomNumberGenerator.GetInt32(100000, 999999).ToString();
         }
     }
 }
