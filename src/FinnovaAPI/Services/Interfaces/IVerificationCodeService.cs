@@ -6,6 +6,7 @@ namespace FinnovaAPI.Services.Interfaces
     {
         Task<ClientVerificationCodeModel> GetCodeByEmail(string email);
         Task SendAndSaveCode(string email);
+        Task ValidateCode(ClientVerificationCodeModel code);
         Task<bool> DeleteCode(string email);
     }
 }

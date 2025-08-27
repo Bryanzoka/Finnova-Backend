@@ -33,24 +33,22 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> SearchClientByCPF(string cpf)
         {
-            return await ValidateAndSearchClient(cpf, ClientValidator.ValidateCpf, _clientRepository.SearchClientByCPF);
+            return await SearchClient(cpf, _clientRepository.SearchClientByCPF);
         }
 
         public async Task<BankClientDTO> SearchClientByEmail(string email)
         {
-            return await ValidateAndSearchClient(email, ClientValidator.ValidateEmail, _clientRepository.SearchClientByEmail);
+            return await SearchClient(email, _clientRepository.SearchClientByEmail);
         }
 
         public async Task<BankClientDTO> SearchClientByPhone(string phone)
         {
-            return await ValidateAndSearchClient(phone, ClientValidator.ValidatePhone, _clientRepository.SearchClientByPhone);
+            return await SearchClient(phone, _clientRepository.SearchClientByPhone);
         }
 
         public async Task<ClientValidationRequestDTO> ValidateClientInfo(ClientValidationRequestDTO client)
         {
-            ValidateClientInfoFormat(client);
             await EnsureClientInfoIsUnique(client);
-
             await _verificationCodeService.SendAndSaveCode(client.Email);
 
             return client;
@@ -58,22 +56,10 @@ namespace FinnovaAPI.Services
 
         public async Task<BankClientDTO> AddClient(RegisterClientDTO registerClient)
         {
-            ValidateClientInfoFormat(registerClient);
             await EnsureClientInfoIsUnique(registerClient);
 
-            var verificationCode = await _verificationCodeService.GetCodeByEmail(registerClient.Email);
-
             //check and delete if the code has expired
-            if (DateTime.UtcNow > verificationCode.Expiration)
-            {
-                await _verificationCodeService.DeleteCode(registerClient.Email);
-                throw new InvalidOperationException("Verification code has expired");
-            }
-
-            if (registerClient.Code != verificationCode.Code)
-            {
-                throw new UnauthorizedAccessException("Invalid verification code");
-            }
+            await _verificationCodeService.ValidateCode(registerClient.Email, registerClient.Code);
 
             var client = BankClientModel.FromRegister(registerClient);
 
@@ -102,7 +88,7 @@ namespace FinnovaAPI.Services
                 client.Password ?? updatedClient.Password
             );
 
-            return BankClientDTO.ToDTO(await _clientRepository.UpdateClient(updatedClient, id));
+            return BankClientDTO.ToDTO(await _clientRepository.UpdateClient(updatedClient));
         }
 
         public async Task<BankClientModel> ValidateCredentials(string cpf, string password)
@@ -119,8 +105,8 @@ namespace FinnovaAPI.Services
 
         public async Task<bool> DeleteClient(int id)
         {
-            await GetClientModelById(id);
-            return await _clientRepository.DeleteClient(id);
+            var client = await GetClientModelById(id);
+            return await _clientRepository.DeleteClient(client);
         }
 
         private async Task<BankClientModel> GetClientModelById(int id)
@@ -147,20 +133,12 @@ namespace FinnovaAPI.Services
             }
         }
 
-        private void ValidateClientInfoFormat(IClientInfo client)
-        { 
-            ClientValidator.ValidateCpf(client.Cpf);
-            ClientValidator.ValidateEmail(client.Email);
-            ClientValidator.ValidatePhone(client.Phone);
-        }
-
-        private async Task<BankClientDTO> ValidateAndSearchClient(string value, Action<string> validate, Func<string, Task<BankClientModel>> searchFunc)
+        private async Task<BankClientDTO> SearchClient(string value, Func<string, Task<BankClientModel>> searchFunc)
         {
-            validate(value);
-            return BankClientDTO.ToDTO(await searchFunc(value));
+            return BankClientDTO.ToDTO(await searchFunc(value)) ?? throw new KeyNotFoundException("Client not found");
         }
 
-        private static async Task<bool> ClientExists(string value, Func<string, Task<BankClientModel>> searchFunc)
+        private async Task<bool> ClientExists(string value, Func<string, Task<BankClientModel>> searchFunc)
         {
             return await searchFunc(value) != null;
         }

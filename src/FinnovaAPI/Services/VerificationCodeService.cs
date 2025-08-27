@@ -44,6 +44,22 @@ namespace FinnovaAPI.Services
             await _verificationCodeRepository.SaveCode(verificationCode);
         }
 
+        public async Task ValidateCode(string email, string code)
+        {
+            var verificationCode = await GetCodeByEmail(email) ?? throw new KeyNotFoundException("No verification code found for this email");
+
+            if (DateTime.UtcNow > verificationCode.Expiration)
+            {
+                await DeleteCode(verificationCode.Email);
+                throw new InvalidOperationException("Verification code has expired");
+            }
+                
+            if (verificationCode.Code != code)
+            {
+                throw new UnauthorizedAccessException("Invalid verification code");
+            }
+        }
+
         public async Task<bool> DeleteCode(string email)
         {
             await GetCodeByEmail(email);

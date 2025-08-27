@@ -10,7 +10,7 @@ namespace FinnovaAPI.Repositories.Interfaces
         Task<BankClientModel> SearchClientByEmail(string email);
         Task<BankClientModel> SearchClientByPhone(string phone);
         Task<BankClientModel> AddClient(BankClientModel client);  
-        Task<BankClientModel> UpdateClient(BankClientModel client, int id);
-        Task<bool> DeleteClient(int id);
+        Task<BankClientModel> UpdateClient(BankClientModel client);
+        Task<bool> DeleteClient(BankClientModel client);
     }
 }

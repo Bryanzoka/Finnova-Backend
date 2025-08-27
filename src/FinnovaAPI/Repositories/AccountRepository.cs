@@ -74,11 +74,9 @@ namespace FinnovaAPI.Repositories
             return accountById;
         }
 
-        public async Task<bool> DeleteAccount(int id)
+        public async Task<bool> DeleteAccount(BankAccountModel account)
         {
-            BankAccountModel accountById = await SearchAccountById(id);
-
-            _dbContext.BankAccount.Remove(accountById);
+            _dbContext.BankAccount.Remove(account);
             await _dbContext.SaveChangesAsync();
 
             return true;

@@ -11,6 +11,6 @@ namespace FinnovaAPI.Repositories.Interfaces
         Task<BankAccountModel> DepositBalance(decimal deposit, int id);
         Task<BankAccountModel> WithdrawBalance(decimal withdraw, int id);
         Task<BankAccountModel> TransferBalance(decimal transfer, int accountId, int recipientId);
-        Task<bool> DeleteAccount(int id);
+        Task<bool> DeleteAccount(BankAccountModel account);
     }
 }

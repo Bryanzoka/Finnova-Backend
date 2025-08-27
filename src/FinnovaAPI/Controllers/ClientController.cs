@@ -105,11 +105,10 @@ namespace FinnovaAPI.Controllers
         [HttpPut("me")]
         public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)
         {
-            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
             try
             {
-                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, int.Parse(id));
+                var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, id);
                 return Ok(bankClient);
             }
             catch (ArgumentException ex)

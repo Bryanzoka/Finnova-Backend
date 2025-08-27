@@ -23,7 +23,6 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> GetAuthenticatedClientAccount(int id, int clientId)
         {
-            AccountValidator.ValidateId(id);
             BankAccountModel account = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
 
             if (clientId != account.ClientId)
@@ -83,10 +82,10 @@ namespace FinnovaAPI.Services
             AccountValidator.ValidateAmount(withdraw.Amount);
 
             if (account.Balance < withdraw.Amount)
-            { 
+            {
                 throw new InvalidOperationException("Insufficient balance");
             }
-    
+
             return BankAccountDTO.ToDTO(await _accountRepository.WithdrawBalance(withdraw.Amount, withdraw.Id));
         }
 
@@ -107,15 +106,27 @@ namespace FinnovaAPI.Services
             {
                 throw new InvalidOperationException("Insufficient balance");
             }
-            
+
             return BankAccountDTO.ToDTO(await _accountRepository.TransferBalance(transfer, accountId, recipientId));
         }
 
         public async Task<bool> DeleteAccount(int id, int clientId)
         {
-            await GetAuthenticatedClientAccount(id, clientId);
+            var account = await GetAuthenticatedAccountModel(id, clientId);
 
-            return await _accountRepository.DeleteAccount(id);
+            return await _accountRepository.DeleteAccount(account);
+        }
+        
+        private async Task<BankAccountModel> GetAuthenticatedAccountModel(int id, int clientId)
+        {
+            var account = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
+
+            if (clientId != account.ClientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to acess this account");
+            }
+
+            return account;
         }
     }
 }

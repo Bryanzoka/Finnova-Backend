@@ -54,23 +54,17 @@ namespace FinnovaAPI.Repositories
             return client;
         }
 
-        public async Task<BankClientModel> UpdateClient(BankClientModel client, int id)
+        public async Task<BankClientModel> UpdateClient(BankClientModel client)
         {
-            BankClientModel clientById = await SearchClientById(id);
-
-            clientById.UpdateClient(client.Name, client.Email, client.Phone, client.Password);
-
-            _dbContext.BankClient.Update(clientById);
+            _dbContext.BankClient.Update(client);
             await _dbContext.SaveChangesAsync();
 
-            return clientById;
+            return client;
         }
 
-        public async Task<bool> DeleteClient(int id)
+        public async Task<bool> DeleteClient(BankClientModel client)
         {
-            BankClientModel clientById = await SearchClientById(id);
-
-            _dbContext.BankClient.Remove(clientById);
+            _dbContext.BankClient.Remove(client);
             await _dbContext.SaveChangesAsync();
 
             return true;
