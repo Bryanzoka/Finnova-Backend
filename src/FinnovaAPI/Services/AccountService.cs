@@ -10,11 +10,13 @@ namespace FinnovaAPI.Services
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IClientService _clientServices;
+        private readonly IPasswordHasherService _passwordHasher;
 
-        public AccountService(IAccountRepository accountRepository, IClientService clientServices)
+        public AccountService(IAccountRepository accountRepository, IClientService clientServices, IPasswordHasherService passwordHasher)
         {
             _accountRepository = accountRepository;
             _clientServices = clientServices;
+            _passwordHasher = passwordHasher;
         }
         public async Task<List<BankAccountModel>> SearchAllAccounts()
         {
@@ -63,12 +65,20 @@ namespace FinnovaAPI.Services
 
             account.ClientId = clientId;
 
+            account.Password = _passwordHasher.HashPassword(account.Password);
+
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
         public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)
         {
             var account = await GetAuthenticatedAccountModel(deposit.Id, clientId);
+
+            if (!_passwordHasher.VerifyPassword(deposit.Password, account.Password))
+            {
+                throw new UnauthorizedAccessException("Incorrect password");
+            }
+
             account.Deposit(deposit.Amount);
 
             return BankAccountDTO.ToDTO(await _accountRepository.UpdateBalance(account));
@@ -77,6 +87,12 @@ namespace FinnovaAPI.Services
         public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId)
         {
             var account = await GetAuthenticatedAccountModel(withdraw.Id, clientId);
+
+            if (!_passwordHasher.VerifyPassword(withdraw.Password, account.Password))
+            {
+                throw new UnauthorizedAccessException("Incorrect password");
+            }
+
             account.Withdraw(withdraw.Amount);
 
             return BankAccountDTO.ToDTO(await _accountRepository.UpdateBalance(account));

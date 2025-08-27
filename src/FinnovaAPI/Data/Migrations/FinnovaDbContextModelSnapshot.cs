@@ -54,7 +54,7 @@ namespace FinnovaAPI.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(4)
-                        .HasColumnType("VARCHAR(4)")
+                        .HasColumnType("VARCHAR(255)")
                         .HasColumnName("password");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -102,7 +102,7 @@ namespace FinnovaAPI.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("VARCHAR(255)")
                         .HasColumnName("password");
 
                     b.Property<string>("Phone")

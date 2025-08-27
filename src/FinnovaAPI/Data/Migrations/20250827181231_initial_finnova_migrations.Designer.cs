@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinnovaAPI.Migrations
 {
     [DbContext(typeof(FinnovaDbContext))]
-    [Migration("20250823042040_initial_finnova_migrations")]
+    [Migration("20250827181231_initial_finnova_migrations")]
     partial class initial_finnova_migrations
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace FinnovaAPI.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(4)
-                        .HasColumnType("VARCHAR(4)")
+                        .HasColumnType("VARCHAR(255)")
                         .HasColumnName("password");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -105,7 +105,7 @@ namespace FinnovaAPI.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("VARCHAR(255)")
                         .HasColumnName("password");
 
                     b.Property<string>("Phone")

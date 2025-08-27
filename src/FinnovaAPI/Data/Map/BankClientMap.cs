@@ -56,7 +56,8 @@ namespace FinnovaAPI.Data.Map
             builder
                 .Property(x => x.Password)
                 .IsRequired()
-                .HasColumnName("password");
+                .HasColumnName("password")
+                .HasColumnType("VARCHAR(255)");
 
             builder
                 .Property(x => x.CreatedAt)

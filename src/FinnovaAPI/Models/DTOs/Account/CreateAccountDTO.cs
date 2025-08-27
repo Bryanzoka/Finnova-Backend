@@ -8,7 +8,6 @@ namespace FinnovaAPI.Models.DTOs.Account
     {
         [JsonIgnore]
         [Required(ErrorMessage = "Client id is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid id number")]
         public int ClientId { get; set; }
 
         [Required(ErrorMessage = "A Account Type is required")]

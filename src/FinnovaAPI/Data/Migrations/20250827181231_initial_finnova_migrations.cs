@@ -47,7 +47,7 @@ namespace FinnovaAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    password = table.Column<string>(type: "longtext", nullable: false)
+                    password = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -67,7 +67,7 @@ namespace FinnovaAPI.Migrations
                     client_id = table.Column<int>(type: "int", nullable: false),
                     account_type = table.Column<int>(type: "int", nullable: false),
                     balance = table.Column<decimal>(type: "DECIMAL(10,2)", nullable: false),
-                    password = table.Column<string>(type: "VARCHAR(4)", maxLength: 4, nullable: false)
+                    password = table.Column<string>(type: "VARCHAR(255)", maxLength: 4, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime(6)", nullable: false),
