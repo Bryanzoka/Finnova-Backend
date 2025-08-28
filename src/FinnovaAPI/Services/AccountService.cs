@@ -25,7 +25,6 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> SearchAccountById(int id)
         {
-            AccountValidator.ValidateId(id);
             BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
 
             return BankAccountDTO.ToDTO(accountById);
@@ -34,20 +33,14 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> GetAuthenticatedClientAccount(int id, int clientId)
         {
-            var account = await SearchAccountById(id);
-
-            if (clientId != account.ClientId)
-            {
-                throw new UnauthorizedAccessException("You are not authorized to acess this account");
-            }
-
-            return account;
+            var account = await GetAuthenticatedAccountModel(id, clientId);
+            return BankAccountDTO.ToDTO(account);
         }
 
         public async Task<List<AccountPreviewDTO>> SearchAllAccountsByClientId(int id)
         {
             var client = await _clientServices.SearchClientById(id);
-            var accounts = await _accountRepository.SearchAllAccountsByClientId(id) ?? throw new KeyNotFoundException("Account not found with this client id");
+            var accounts = await _accountRepository.SearchAllAccountsByClientId(id) ?? throw new KeyNotFoundException("No accounts found for this client");
 
             return accounts.Select(account => new AccountPreviewDTO
             {
@@ -73,11 +66,7 @@ namespace FinnovaAPI.Services
         public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)
         {
             var account = await GetAuthenticatedAccountModel(deposit.Id, clientId);
-
-            if (!_passwordHasher.VerifyPassword(deposit.Password, account.Password))
-            {
-                throw new UnauthorizedAccessException("Incorrect password");
-            }
+            VerifyPassword(deposit.Password, account.Password);
 
             account.Deposit(deposit.Amount);
 
@@ -87,11 +76,7 @@ namespace FinnovaAPI.Services
         public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId)
         {
             var account = await GetAuthenticatedAccountModel(withdraw.Id, clientId);
-
-            if (!_passwordHasher.VerifyPassword(withdraw.Password, account.Password))
-            {
-                throw new UnauthorizedAccessException("Incorrect password");
-            }
+            VerifyPassword(withdraw.Password, account.Password);
 
             account.Withdraw(withdraw.Amount);
 
@@ -102,14 +87,11 @@ namespace FinnovaAPI.Services
         {
             var sourceAccount = await GetAuthenticatedAccountModel(transfer.SenderAccountId, clientId);
 
-            if (!_passwordHasher.VerifyPassword(transfer.Password, sourceAccount.Password))
-            {
-                throw new UnauthorizedAccessException("Incorrect password");
-            }
+            VerifyPassword(transfer.Password, sourceAccount.Password);
 
             var recipientAccount = await GetAccountModelById(transfer.RecipientId);
 
-            if (sourceAccount.Id == recipientAccount.ClientId)
+            if (sourceAccount.Id == recipientAccount.Id)
             {
                 throw new ArgumentException("Source and destination account IDs must be different");
             }
@@ -134,7 +116,7 @@ namespace FinnovaAPI.Services
         {
             return await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException("Account not found");
         }
-        
+
         private async Task<BankAccountModel> GetAuthenticatedAccountModel(int id, int clientId)
         {
             var account = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException("Account not found");
@@ -145,6 +127,14 @@ namespace FinnovaAPI.Services
             }
 
             return account;
+        }
+
+        private void VerifyPassword(string password, string hashedPassword)
+        { 
+            if (!_passwordHasher.VerifyPassword(password, hashedPassword))
+            {
+                throw new UnauthorizedAccessException("Incorrect password");
+            }
         }
     }
 }
