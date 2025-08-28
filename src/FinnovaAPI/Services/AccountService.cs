@@ -71,7 +71,6 @@ namespace FinnovaAPI.Services
             }
 
             return BankAccountDTO.ToDTO(await _accountRepository.UpdateAccount(bankAccount));
-            //$2a$11$2K.kOV78qDVI1vNK/d0t/On1gWZAYN7x/fB6YOgBVz6yHu1Rl2DMW
         }
 
         public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)

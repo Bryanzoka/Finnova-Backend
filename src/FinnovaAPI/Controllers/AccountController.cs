@@ -4,7 +4,6 @@ using FinnovaAPI.Models.DTOs.Account;
 using FinnovaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FinnovaAPI.Controllers
 {
@@ -94,8 +93,6 @@ namespace FinnovaAPI.Controllers
             }
         }
 
-        //TODO: create a http put or patch to update the account password
-
         [Authorize]
         [HttpPatch]
         public async Task<ActionResult<BankAccountDTO>> UpdatePassword([FromBody] UpdateAccountDTO account)
@@ -115,7 +112,6 @@ namespace FinnovaAPI.Controllers
                 return Unauthorized(ex.Message);
             }
         }
-
 
         [Authorize]
         [HttpPatch("deposit")]
@@ -192,7 +188,6 @@ namespace FinnovaAPI.Controllers
             {
                 return Unauthorized(ex.Message);
             }
-
         }
 
         [Authorize]
