@@ -102,6 +102,11 @@ namespace FinnovaAPI.Services
         {
             var sourceAccount = await GetAuthenticatedAccountModel(transfer.SenderAccountId, clientId);
 
+            if (_passwordHasher.VerifyPassword(transfer.Password, sourceAccount.Password))
+            {
+                throw new UnauthorizedAccessException("Incorrect password");
+            }
+
             var recipientAccount = await GetAccountModelById(transfer.RecipientId);
 
             if (sourceAccount.Id == recipientAccount.ClientId)
