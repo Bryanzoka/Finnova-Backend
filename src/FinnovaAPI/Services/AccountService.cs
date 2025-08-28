@@ -25,16 +25,13 @@ namespace FinnovaAPI.Services
 
         public async Task<BankAccountDTO> SearchAccountById(int id)
         {
-            BankAccountModel accountById = await _accountRepository.SearchAccountById(id) ?? throw new KeyNotFoundException($"Account not found");
-
-            return BankAccountDTO.ToDTO(accountById);
+            return BankAccountDTO.ToDTO(await GetAccountModelById(id));
         }
 
 
         public async Task<BankAccountDTO> GetAuthenticatedClientAccount(int id, int clientId)
         {
-            var account = await GetAuthenticatedAccountModel(id, clientId);
-            return BankAccountDTO.ToDTO(account);
+            return BankAccountDTO.ToDTO(await GetAuthenticatedAccountModel(id, clientId));
         }
 
         public async Task<List<AccountPreviewDTO>> SearchAllAccountsByClientId(int id)
@@ -63,6 +60,20 @@ namespace FinnovaAPI.Services
             return BankAccountDTO.ToDTO(await _accountRepository.AddAccount(BankAccountModel.CreationDTOToModel(account)));
         }
 
+        public async Task<BankAccountDTO> UpdateAccount(UpdateAccountDTO account, int clientId)
+        {
+            var bankAccount = await GetAuthenticatedAccountModel(account.Id, clientId);
+            VerifyPassword(account.Password, bankAccount.Password);
+
+            if (account.Password != null)
+            {
+                bankAccount.UpdateAccount(_passwordHasher.HashPassword(account.NewPassword));
+            }
+
+            return BankAccountDTO.ToDTO(await _accountRepository.UpdateAccount(bankAccount));
+            //$2a$11$2K.kOV78qDVI1vNK/d0t/On1gWZAYN7x/fB6YOgBVz6yHu1Rl2DMW
+        }
+
         public async Task<BankAccountDTO> DepositBalance(DepositDTO deposit, int clientId)
         {
             var account = await GetAuthenticatedAccountModel(deposit.Id, clientId);
@@ -70,7 +81,7 @@ namespace FinnovaAPI.Services
 
             account.Deposit(deposit.Amount);
 
-            return BankAccountDTO.ToDTO(await _accountRepository.UpdateBalance(account));
+            return BankAccountDTO.ToDTO(await _accountRepository.UpdateAccount(account));
         }
 
         public async Task<BankAccountDTO> WithdrawBalance(WithdrawDTO withdraw, int clientId)
@@ -80,7 +91,7 @@ namespace FinnovaAPI.Services
 
             account.Withdraw(withdraw.Amount);
 
-            return BankAccountDTO.ToDTO(await _accountRepository.UpdateBalance(account));
+            return BankAccountDTO.ToDTO(await _accountRepository.UpdateAccount(account));
         }
 
         public async Task<BankAccountDTO> TransferBalance(TransferDTO transfer, int clientId)
@@ -99,8 +110,8 @@ namespace FinnovaAPI.Services
             sourceAccount.Withdraw(transfer.Amount);
             recipientAccount.Deposit(transfer.Amount);
 
-            await _accountRepository.UpdateBalance(sourceAccount);
-            await _accountRepository.UpdateBalance(recipientAccount);
+            await _accountRepository.UpdateAccount(sourceAccount);
+            await _accountRepository.UpdateAccount(recipientAccount);
 
             return BankAccountDTO.ToDTO(sourceAccount);
         }

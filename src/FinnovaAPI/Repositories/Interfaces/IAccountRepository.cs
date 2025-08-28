@@ -8,7 +8,7 @@ namespace FinnovaAPI.Repositories.Interfaces
         Task<BankAccountModel> SearchAccountById(int id);
         Task<List<BankAccountModel>> SearchAllAccountsByClientId(int id);
         Task<BankAccountModel> AddAccount(BankAccountModel account);  
-        Task<BankAccountModel> UpdateBalance(BankAccountModel account);
+        Task<BankAccountModel> UpdateAccount(BankAccountModel account);
         Task<bool> DeleteAccount(BankAccountModel account);
     }
 }

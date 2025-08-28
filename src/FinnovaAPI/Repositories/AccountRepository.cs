@@ -38,7 +38,7 @@ namespace FinnovaAPI.Repositories
             return account;
         }
 
-        public async Task<BankAccountModel> UpdateBalance(BankAccountModel account)
+        public async Task<BankAccountModel> UpdateAccount(BankAccountModel account)
         {
             _dbContext.BankAccount.Update(account);
             await _dbContext.SaveChangesAsync();

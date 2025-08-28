@@ -4,6 +4,7 @@ using FinnovaAPI.Models.DTOs.Account;
 using FinnovaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FinnovaAPI.Controllers
 {
@@ -51,7 +52,7 @@ namespace FinnovaAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("search/{id}")]
+        [HttpGet("client/{id}")]
         public async Task<ActionResult<List<AccountPreviewDTO>>> SearchAllAccountsByClientId(int id)
         {
             try
@@ -71,12 +72,12 @@ namespace FinnovaAPI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO newBankAccountDTO)
+        public async Task<ActionResult<CreateAccountDTO>> AddAccount([FromBody] CreateAccountDTO account)
         {
             try
             {
                 int clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var bankAccount = await _accountService.AddAccount(newBankAccountDTO, clientId);
+                var bankAccount = await _accountService.AddAccount(account, clientId);
                 return Ok(bankAccount);
             }
             catch (ArgumentException ex)
@@ -96,6 +97,27 @@ namespace FinnovaAPI.Controllers
         //TODO: create a http put or patch to update the account password
 
         [Authorize]
+        [HttpPatch]
+        public async Task<ActionResult<BankAccountDTO>> UpdatePassword([FromBody] UpdateAccountDTO account)
+        {
+            try
+            {
+                int clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var bankAccount = await _accountService.UpdateAccount(account, clientId);
+                return Ok(bankAccount);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
+
+        [Authorize]
         [HttpPatch("deposit")]
         public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromBody] DepositDTO deposit)
         {
@@ -109,10 +131,6 @@ namespace FinnovaAPI.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -140,7 +158,7 @@ namespace FinnovaAPI.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(ex.Message);
             } 
         }
 

@@ -63,6 +63,12 @@ namespace FinnovaAPI.Models
             };
         }
 
+        public void UpdateAccount(string password)
+        {
+            Password = password;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void Deposit(decimal amount)
         {
             if (amount < 0)
