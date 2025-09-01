@@ -16,9 +16,7 @@ namespace FinnovaAPI.Repositories
 
         public async Task<ClientVerificationCodeModel> GetCodeByEmail(string email)
         {
-            ClientVerificationCodeModel code = await _dbContext.ClientVerificationCode.FirstOrDefaultAsync(c => c.Email == email);
-
-            return code;
+            return await _dbContext.ClientVerificationCode.FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task SaveCode(ClientVerificationCodeModel code)
@@ -27,10 +25,8 @@ namespace FinnovaAPI.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteCode(string email)
+        public async Task<bool> DeleteCode(ClientVerificationCodeModel code)
         {
-            ClientVerificationCodeModel code = await GetCodeByEmail(email);
-
             _dbContext.ClientVerificationCode.Remove(code);
             await _dbContext.SaveChangesAsync();
 

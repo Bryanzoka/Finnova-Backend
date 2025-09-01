@@ -62,9 +62,7 @@ namespace FinnovaAPI.Services
 
         public async Task<bool> DeleteCode(string email)
         {
-            await GetCodeByEmail(email);
-
-            return await _verificationCodeRepository.DeleteCode(email);
+            return await _verificationCodeRepository.DeleteCode(await GetCodeByEmail(email));
         }
 
         private async Task<bool> CodeExistsByEmail(string email)
