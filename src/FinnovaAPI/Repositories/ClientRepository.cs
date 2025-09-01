@@ -20,30 +20,22 @@ namespace FinnovaAPI.Repositories
 
         public async Task<BankClientModel> SearchClientById(int id)
         {
-            BankClientModel clientById = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Id == id);
-
-            return clientById;
+            return await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<BankClientModel> SearchClientByCPF(string cpf)
         {
-            BankClientModel clientByCPF = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Cpf == cpf);
-
-            return clientByCPF;
+            return await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Cpf == cpf);
         }
         
         public async Task<BankClientModel> SearchClientByEmail(string email)
         {
-            BankClientModel clientByEmail = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Email == email);
-
-            return clientByEmail;
+            return await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task<BankClientModel> SearchClientByPhone(string phone)
         {
-            BankClientModel clientByPhone = await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Phone == phone);
-
-            return clientByPhone;
+            return await _dbContext.BankClient.FirstOrDefaultAsync(c => c.Phone == phone);
         }
 
         public async Task<BankClientModel> AddClient(BankClientModel client)

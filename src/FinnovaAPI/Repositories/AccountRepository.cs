@@ -20,9 +20,7 @@ namespace FinnovaAPI.Repositories
 
         public async Task<BankAccountModel> SearchAccountById(int id)
         {
-            BankAccountModel accountById = await _dbContext.BankAccount.FirstOrDefaultAsync(c => c.Id == id);
-
-            return accountById;
+            return await _dbContext.BankAccount.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<BankAccountModel>> SearchAllAccountsByClientId(int clientId)
