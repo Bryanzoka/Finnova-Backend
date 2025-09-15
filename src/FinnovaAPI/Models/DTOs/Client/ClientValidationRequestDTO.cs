@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinnovaAPI.Models.DTOs.Client
 {
-    public class ClientValidationRequestDTO : IClientInfo
+    public record ClientValidationRequestDTO : IClientInfo
     {
         [Required(ErrorMessage = "CPF is required")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF must be 11 digits long")]

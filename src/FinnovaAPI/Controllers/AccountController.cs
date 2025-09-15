@@ -94,13 +94,13 @@ namespace FinnovaAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch]
-        public async Task<ActionResult<BankAccountDTO>> UpdatePassword([FromBody] UpdateAccountDTO account)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<BankAccountDTO>> UpdatePassword([FromBody] UpdateAccountDTO account, int id)
         {
             try
             {
                 int clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var bankAccount = await _accountService.UpdateAccount(account, clientId);
+                var bankAccount = await _accountService.UpdateAccount(account, id, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -114,14 +114,14 @@ namespace FinnovaAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("deposit")]
-        public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromBody] DepositDTO deposit)
+        [HttpPatch("deposit/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> DepositBalance([FromBody] DepositDTO deposit, int id)
         {
             try
             {
                 //Client id comes as a string of the token
                 var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var account = await _accountService.DepositBalance(deposit, clientId);
+                var account = await _accountService.DepositBalance(deposit, id, clientId);
                 return Ok(account);
             }
             catch (KeyNotFoundException ex)
@@ -135,13 +135,13 @@ namespace FinnovaAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("withdraw")]
-        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromBody] WithdrawDTO withdraw)
+        [HttpPatch("withdraw/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> WithdrawBalance([FromBody] WithdrawDTO withdraw, int id)
         {
             try
             {
                 var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw, clientId);
+                BankAccountDTO bankAccount = await _accountService.WithdrawBalance(withdraw, id, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)
@@ -159,13 +159,13 @@ namespace FinnovaAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("transfer")]
-        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromBody] TransferDTO transfer)
+        [HttpPatch("transfer/{id}")]
+        public async Task<ActionResult<BankAccountDTO>> TransferBalance([FromBody] TransferDTO transfer, int id)
         {
             try
             {
                 var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer, clientId);
+                BankAccountDTO bankAccount = await _accountService.TransferBalance(transfer, id, clientId);
                 return Ok(bankAccount);
             }
             catch (KeyNotFoundException ex)

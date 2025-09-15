@@ -2,7 +2,7 @@ using FinnovaAPI.Enums;
 
 namespace FinnovaAPI.Models.DTOs.Account
 {
-    public class AccountPreviewDTO
+    public record AccountPreviewDTO
     {
         public int Id { get; set; }
         public int ClientId { get; set; }

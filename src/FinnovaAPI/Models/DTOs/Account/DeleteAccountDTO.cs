@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinnovaAPI.Models.DTOs.Account
 {
-    public class DeleteAccountDTO
+    public record DeleteAccountDTO
     {
         [Required(ErrorMessage = "Account id is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]

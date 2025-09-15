@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinnovaAPI.Models.DTOs.Client
 {
-    public class UpdateClientDTO
+    public record UpdateClientDTO
     {
         [StringLength(100, ErrorMessage = "The name entered is too long")]
         public string Name { get; set; }
