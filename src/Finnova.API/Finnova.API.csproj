@@ -25,4 +25,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Finnova.Application\Finnova.Application.csproj" />
+    <ProjectReference Include="..\Finnova.Infrastructure\Finnova.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
