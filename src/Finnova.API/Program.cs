@@ -1,13 +1,16 @@
 using Microsoft.OpenApi.Models;
-using FinnovaAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using FinnovaAPI.Repositories;
-using FinnovaAPI.Services.Interfaces;
-using FinnovaAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using FinnovaAPI.Repositories.Interfaces;
+using Finnova.Infrastructure.Persistence.Configurations;
+using Finnova.Application;
+using Finnova.Infrastructure.Repositories;
+using Finnova.Domain.Repositories;
+using Finnova.Application.Contracts;
+using Finnova.Infrastructure.Services;
+using Finnova.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -62,25 +65,27 @@ builder.Services.AddAuthentication(x =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
             ClockSkew = TimeSpan.Zero
         };
     });
 
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
 builder.Services.AddControllers();
+
+//Repository dependency injection
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+
+//Service dependency injection
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
-builder.Services.AddScoped<IVerificationCodeService, VerificationCodeService>();
-builder.Services.AddHostedService<SavingsYieldService>();
+
+//Unit of Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

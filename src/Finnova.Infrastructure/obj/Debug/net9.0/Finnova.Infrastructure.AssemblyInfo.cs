@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Finnova.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6748e591596a8ada119b2612585cda1ba490b4f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1be2dfd6f9939699d14d4cb764718cbb3a4fd63b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Finnova.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Finnova.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

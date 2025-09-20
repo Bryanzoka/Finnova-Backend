@@ -34,3 +34,5 @@ C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\Finnova.Infrastruct
 C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\Finnova.Infrastructure\obj\Debug\net9.0\refint\Finnova.Infrastructure.dll
 C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\Finnova.Infrastructure\obj\Debug\net9.0\Finnova.Infrastructure.pdb
 C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\Finnova.Infrastructure\obj\Debug\net9.0\ref\Finnova.Infrastructure.dll
+C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\finnova.infrastructure\bin\Debug\net9.0\Finnova.Infrastructure.runtimeconfig.json
+C:\Users\BryanSales\Documents\C#Projects\Finnova-Backend\src\finnova.infrastructure\obj\Debug\net9.0\Finnova.Infrastructure.genruntimeconfig.cache

@@ -1,13 +1,11 @@
-using FinnovaAPI.Models.DTOs.Client;
-using FinnovaAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+/* using Microsoft.AspNetCore.Mvc;
 
 namespace FinnovaAPI.Controllers
 {
     [ApiController]
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
-    {
+    {/* 
         private readonly IClientService _clientService;
         private readonly ITokenService _tokenService;
 
@@ -38,6 +36,6 @@ namespace FinnovaAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
+        } 
     }
-}
+} */

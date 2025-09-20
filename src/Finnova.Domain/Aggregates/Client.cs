@@ -25,8 +25,8 @@ namespace Finnova.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(phone) || phone.Length < 11 || phone.Length > 13)
                 throw new ArgumentException("Phone must be between 11 and 13 digits and contain only numbers", nameof(phone));
 
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
-                throw new ArgumentException("Password must be at least 8 characters long", nameof(password));
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentNullException(nameof(password), "Password is required");
 
             Name = name;
             Cpf = cpf;
@@ -58,8 +58,11 @@ namespace Finnova.Domain.Aggregates
             UpdatedAt = DateTime.Now;
         }
 
-        public void HashPassword(string hashedPassword)
+        public void SetHashPassword(string hashedPassword)
         {
+            if (string.IsNullOrWhiteSpace(hashedPassword))
+                throw new ArgumentException("Password hash is required.");
+
             Password = hashedPassword;
         }
     }

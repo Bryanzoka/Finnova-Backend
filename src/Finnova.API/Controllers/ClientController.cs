@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using FinnovaAPI.Models;
-using FinnovaAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using FinnovaAPI.Models.DTOs.Client;
-using FinnovaAPI.Models.DTOs.Account;
+using MediatR;
+using Finnova.Application.Commands.Clients;
+using Finnova.Application.DTOs;
+using Finnova.Application.Queries;
+using Finnova.Domain.Aggregates;
 
 namespace FinnovaAPI.Controllers
 {
@@ -12,130 +11,48 @@ namespace FinnovaAPI.Controllers
     [Route("api/clients")]
     public class ClientController : ControllerBase
     {
-        private readonly IClientService _clientService;
+        private readonly IMediator _mediator;
 
-        public ClientController(IClientService clientService)
+        public ClientController(IMediator mediator)
         {
-            _clientService = clientService;
+            _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<BankClientModel>>> SearchAllClients()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetClientById(int id)
         {
-            List<BankClientModel> bankClients = await _clientService.SearchAllClients();
-            return Ok(bankClients);
+            var query = new GetClientByIdQuery { Id = id };
+            var clientDto = await _mediator.Send(query);
+
+            if (clientDto == null)
+                return NotFound("Client not found");
+
+            return Ok(clientDto);
         }
 
-        [Authorize]
-        [HttpGet("me")]
-        public async Task<ActionResult<BankClientDTO>> SearchClientById()
+        [HttpPost("request")]
+        public async Task<IActionResult> RequestVerificationCode([FromBody] RequestVerificationCodeDto dto)
         {
-            try
-            {
-                var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                BankClientDTO bankClientByCpf = await _clientService.SearchClientById(int.Parse(id));
-                return Ok(bankClientByCpf);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var command = new RequestVerificationCodeCommand { Email = dto.Email };
+            await _mediator.Send(command);
+            return NoContent();
         }
 
-        [Authorize]
-        [HttpPost("search")]
-        public async Task<ActionResult<BankClientDTO>> SearchClientByCPF([FromBody] CpfRequest recipient)
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] CreateClientDto dto)
         {
-            try
+            var command = new CreateClientCommand
             {
-                BankClientDTO bankClientByCpf = await _clientService.SearchClientByCPF(recipient.Cpf);
-                return Ok(bankClientByCpf);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
+                Name = dto.Name,
+                Cpf = dto.Cpf,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Password = dto.Password,
+                Code = dto.Code
+            };
 
-        [HttpPost("verify")]
-        public async Task<ActionResult> ValidateClientInfo([FromBody] ClientValidationRequestDTO client)
-        {
-            try
-            {
-                var verifiedClient = await _clientService.ValidateClientInfo(client);
-                return Ok(verifiedClient);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("register")]
-        public async Task<ActionResult<BankClientDTO>> AddClient([FromBody] RegisterClientDTO client)
-        {
-            try
-            {
-                var registeredClient = await _clientService.AddClient(client);
-                return Ok(registeredClient);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-        
-        [Authorize]
-        [HttpPut("me")]
-        public async Task<ActionResult<BankClientDTO>> UpdateClient([FromBody] UpdateClientDTO updatedClient)
-        {
-            try
-            {
-                var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                BankClientDTO bankClient = await _clientService.UpdateClient(updatedClient, id);
-                return Ok(bankClient);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [Authorize]
-        [HttpDelete]
-        public async Task<ActionResult<BankClientModel>> DeleteClient()
-        {
-            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            try
-            {
-                bool clientDeleted = await _clientService.DeleteClient(int.Parse(id));
-                return Ok(clientDeleted);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var newClientId = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetClientById), new { id = newClientId }, null);
         }
     }
 }
