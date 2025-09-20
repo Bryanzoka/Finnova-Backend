@@ -5,7 +5,7 @@ using Finnova.Domain.Repositories;
 using FinnovaAPI.Repositories;
 using MediatR;
 
-namespace Finnova.Application.Handlers
+namespace Finnova.Application.Handlers.Clients
 {
     public class RequestVerificationCodeCommandHandler : IRequestHandler<RequestVerificationCodeCommand, Unit>
     {

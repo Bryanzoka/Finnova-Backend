@@ -5,7 +5,7 @@ using MediatR;
 using Finnova.Domain.Repositories;
 using Finnova.Domain.Aggregates;
 
-namespace Finnova.Application.Handlers
+namespace Finnova.Application.Handlers.Clients
 {
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, int>
     {

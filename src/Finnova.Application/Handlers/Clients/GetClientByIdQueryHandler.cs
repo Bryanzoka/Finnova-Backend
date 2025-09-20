@@ -1,13 +1,11 @@
-using System.Reflection.Metadata.Ecma335;
-using Finnova.Application.DTOs;
-using Finnova.Application.Queries;
-using Finnova.Domain.Aggregates;
+using Finnova.Application.DTOs.Clients;
+using Finnova.Application.Queries.Clients;
 using FinnovaAPI.Repositories;
 using MediatR;
 
-namespace Finnova.Application.Handlers
+namespace Finnova.Application.Handlers.Clients
 {
-    public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, ClientDto>
+    public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, ClientDto?>
     {
         private readonly IClientRepository _clientRepository;
 

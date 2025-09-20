@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Finnova.Application.Commands.Clients;
-using Finnova.Application.DTOs;
-using Finnova.Application.Queries;
-using Finnova.Domain.Aggregates;
+using Finnova.Application.DTOs.Clients;
+using Finnova.Application.Queries.Clients;
 
-namespace FinnovaAPI.Controllers
+namespace Finnova.API.Controllers
 {
     [ApiController]
     [Route("api/clients")]
@@ -16,6 +15,20 @@ namespace FinnovaAPI.Controllers
         public ClientController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllClients()
+        {
+            var query = new GetAllClientsQuery();
+            var clients = await _mediator.Send(query);
+
+            if (clients == null)
+            {
+                return NotFound("Clients not found");
+            }
+
+            return Ok(clients);
         }
 
         [HttpGet("{id}")]

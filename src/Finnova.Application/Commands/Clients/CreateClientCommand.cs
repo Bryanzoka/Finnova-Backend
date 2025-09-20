@@ -4,11 +4,11 @@ namespace Finnova.Application.Commands.Clients
 {
     public class CreateClientCommand : IRequest<int>
     { 
-        public string Name { get; set; }
-        public string Cpf { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Password { get; set; }
-        public string Code { get; set; }
+        public required string Name { get; set; }
+        public required string Cpf { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Password { get; set; }
+        public required string Code { get; set; }
     }
 }

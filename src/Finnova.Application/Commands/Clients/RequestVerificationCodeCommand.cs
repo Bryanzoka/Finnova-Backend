@@ -4,6 +4,6 @@ namespace Finnova.Application.Commands.Clients
 {
     public class RequestVerificationCodeCommand : IRequest<Unit>
     {
-        public string Email { get; set; }
+        public required string Email { get; set; }
     }
 }

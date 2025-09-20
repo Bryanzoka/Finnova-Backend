@@ -1,4 +1,4 @@
-namespace Finnova.Application.DTOs
+namespace Finnova.Application.DTOs.Clients
 {
     public record ClientDto(
         int Id,
