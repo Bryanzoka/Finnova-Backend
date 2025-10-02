@@ -9,6 +9,7 @@ namespace Finnova.Application.Commands.Clients
         public required string Email { get; set; }
         public required string Phone { get; set; }
         public required string Password { get; set; }
+        public required string Password_confirmation { get; set; }
         public required string Code { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Finnova.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllClients()
+        public async Task<IActionResult> GetAll()
         {
             var query = new GetAllClientsQuery();
             var clients = await _mediator.Send(query);
@@ -32,7 +32,7 @@ namespace Finnova.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClientById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var query = new GetClientByIdQuery { Id = id };
             var clientDto = await _mediator.Send(query);
@@ -61,11 +61,29 @@ namespace Finnova.API.Controllers
                 Email = dto.Email,
                 Phone = dto.Phone,
                 Password = dto.Password,
+                Password_confirmation = dto.Password_confirmation,
                 Code = dto.Code
             };
 
             var newClientId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetClientById), new { id = newClientId }, null);
+            return CreatedAtAction(nameof(GetById), new { id = newClientId }, null);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateClientDto dto)
+        {
+            var command = new UpdateClientCommand
+            {
+                Id = id,
+                Name = dto.Name,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Password = dto.Password
+            };
+
+            await _mediator.Send(command);
+
+            return NoContent();
         }
     }
 }

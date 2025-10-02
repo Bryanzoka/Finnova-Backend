@@ -11,6 +11,10 @@ using Finnova.Domain.Repositories;
 using Finnova.Application.Contracts;
 using Finnova.Infrastructure.Services;
 using Finnova.Infrastructure.Persistence;
+using FluentValidation.AspNetCore;
+using Finnova.Application.Validators.Clients;
+using FluentValidation;
+using Finnova.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -82,6 +86,11 @@ builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeReposito
 //Service dependency injection
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IClientUniquenessChecker, ClientUniquenessChecker>();
+
+//FluentValidation 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateClientCommandValidator>();
 
 //Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

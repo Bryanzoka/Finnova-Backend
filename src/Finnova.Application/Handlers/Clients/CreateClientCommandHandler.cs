@@ -4,20 +4,23 @@ using Finnova.Application.Contracts;
 using MediatR;
 using Finnova.Domain.Repositories;
 using Finnova.Domain.Aggregates;
+using Finnova.Domain.Services;
 
 namespace Finnova.Application.Handlers.Clients
 {
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, int>
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IClientUniquenessChecker _clientChecker;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IVerificationCodeRepository _verificationCodeRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateClientCommandHandler(IClientRepository clientRepository, IPasswordHasherService passwordHasher,
-            IVerificationCodeRepository verificationCodeRepository, IUnitOfWork unitOfWork)
+        public CreateClientCommandHandler(IClientRepository clientRepository, IClientUniquenessChecker clientChecker,
+            IPasswordHasherService passwordHasher, IVerificationCodeRepository verificationCodeRepository, IUnitOfWork unitOfWork)
         {
             _clientRepository = clientRepository;
+            _clientChecker = clientChecker;
             _passwordHasher = passwordHasher;
             _verificationCodeRepository = verificationCodeRepository;
             _unitOfWork = unitOfWork;
@@ -25,14 +28,7 @@ namespace Finnova.Application.Handlers.Clients
 
         public async Task<int> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
-            if (await _clientRepository.CpfExistsAsync(request.Cpf))
-                throw new InvalidOperationException("Client with this CPF already exists");
-
-            if (await _clientRepository.EmailExistsAsync(request.Email))
-                throw new InvalidOperationException("Client with this e-mail already exists");
-
-            if (await _clientRepository.PhoneExistsAsync(request.Phone))
-                throw new InvalidOperationException("Client with this phone already exists");
+            await _clientChecker.EnsureAllIsUniqueAsync(request.Cpf, request.Email, request.Phone);
 
             var verificationCode = await _verificationCodeRepository.GetByEmailAsync(request.Email) ?? throw new KeyNotFoundException("verification code not requested");
 

@@ -22,7 +22,7 @@ namespace Finnova.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(email) || !email.Contains('@') )
                 throw new ArgumentException("Invalid email format", nameof(email));
 
-            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 11 || phone.Length > 13)
+            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 11 || phone.Length > 13 || !phone.All(char.IsDigit))
                 throw new ArgumentException("Phone must be between 11 and 13 digits and contain only numbers", nameof(phone));
 
             if (string.IsNullOrWhiteSpace(password))
@@ -49,7 +49,7 @@ namespace Finnova.Domain.Aggregates
             if (string.IsNullOrWhiteSpace(email) || !email.Contains('@') )
                 throw new ArgumentException("Invalid email format", nameof(email));
 
-            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 11 || phone.Length > 13)
+            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 11 || phone.Length > 13 || !phone.All(char.IsDigit))
                 throw new ArgumentException("Phone must be between 11 and 13 digits and contain only numbers", nameof(phone));
 
             Name = name;
