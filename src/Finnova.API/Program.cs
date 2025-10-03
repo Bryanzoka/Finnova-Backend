@@ -15,6 +15,7 @@ using FluentValidation.AspNetCore;
 using Finnova.Application.Validators.Clients;
 using FluentValidation;
 using Finnova.Domain.Services;
+using Finnova.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -107,6 +108,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

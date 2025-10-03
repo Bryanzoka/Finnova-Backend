@@ -39,6 +39,11 @@ namespace Finnova.Infrastructure.Repositories
             _dbContext.Update(client);
         }
 
+        public void Delete(Client client)
+        {
+            _dbContext.Remove(client);
+        }
+
         public async Task<bool> CpfExistsAsync(string cpf)
         {
             return await _dbContext.Clients.AsNoTracking().AnyAsync(c => c.Cpf == cpf);

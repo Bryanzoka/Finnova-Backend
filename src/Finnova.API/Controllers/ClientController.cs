@@ -85,5 +85,14 @@ namespace Finnova.API.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var command = new DeleteClientCommand { Id = id };
+            await _mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }
