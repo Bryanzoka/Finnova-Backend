@@ -18,7 +18,7 @@ namespace Finnova.Application.Handlers.Clients
 
         public async Task<Unit> Handle(DeleteClientCommand request, CancellationToken cancellationToken)
         {
-            var client = await _clientRepository.GetByIdAsync(request.Id) ?? throw new AppDomainUnloadedException($"Client with id: {request.Id} not found");
+            var client = await _clientRepository.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException($"Client with id: {request.Id} not found");
 
             _clientRepository.Delete(client);
 
