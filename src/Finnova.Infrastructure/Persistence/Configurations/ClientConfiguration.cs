@@ -2,7 +2,7 @@ using Finnova.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Finnova.Infrastructure.Configurations
+namespace Finnova.Infrastructure.Persistence.Configurations
 {
     public class ClientConfiguration : IEntityTypeConfiguration<Client>
     {
