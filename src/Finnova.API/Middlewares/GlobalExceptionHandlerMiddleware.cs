@@ -1,5 +1,5 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Finnova.Domain.Exceptions;
 
 namespace Finnova.API.Middlewares
 {
@@ -20,26 +20,54 @@ namespace Finnova.API.Middlewares
             {
                 await _next.Invoke(context);
             }
-            catch (KeyNotFoundException ex)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsJsonAsync(new { error = ex.Message });
-            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"unexpected error: {ex.Message}");
-
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-                var response = new
-                {
-                    StatusCode = context.Response.StatusCode,
-                    Message = "unexpected error, try again later"
-                };
-
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            var statusCode = StatusCodes.Status500InternalServerError;
+            var message = "unexpected error, try again later";
+
+            switch (ex)
+            {
+                case KeyNotFoundException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    message = ex.Message;
+                    break;
+
+                case ArgumentException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    message = ex.Message;
+                    break;
+
+                case UnauthorizedAccessException:
+                    statusCode = StatusCodes.Status401Unauthorized;
+                    message = ex.Message;
+                    break;
+                case DomainException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    message = ex.Message;
+                    break;
+
+                default:
+                    _logger.LogError(ex, $"unexpected error: {ex.Message}");
+                    break;
+            }
+
+            
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            var response = new
+            {
+                statusCode,
+                message
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 }
