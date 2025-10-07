@@ -7,5 +7,7 @@ src/Finnova.Domain/bin
 src/Finnova.Domain/obj
 src/Finnova.Infrastructure/bin
 src/Finnova.Infrastructure/obj
+obj/
+bin/
 .vs
 .vscode

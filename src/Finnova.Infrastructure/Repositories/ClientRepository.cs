@@ -19,14 +19,14 @@ namespace Finnova.Infrastructure.Repositories
             return await _dbContext.Clients.ToListAsync(); 
         }
 
-        public async Task<Client?> GetByCpfAsync(string cpf)
-        {
-            return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Cpf == cpf);
-        }
-
         public async Task<Client?> GetByIdAsync(int id)
         {
             return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<Client?> GetByCpfAsync(string cpf)
+        {
+            return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Cpf == cpf);
         }
 
         public async Task AddAsync(Client client)

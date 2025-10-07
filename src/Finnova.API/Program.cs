@@ -83,6 +83,7 @@ builder.Services.AddControllers();
 //Repository dependency injection
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 //Service dependency injection
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
