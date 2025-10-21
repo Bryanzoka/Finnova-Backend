@@ -1,5 +1,6 @@
 using Finnova.Application.Commands.Clients;
 using Finnova.Application.Contracts;
+using Finnova.Application.Exceptions;
 using Finnova.Domain.Services;
 using FinnovaAPI.Repositories;
 using MediatR;
@@ -24,7 +25,12 @@ namespace Finnova.Application.Handlers.Clients
 
         public async Task<Unit> Handle(UpdateClientCommand request, CancellationToken cancellationToken)
         {
-            var client = await _clientRepository.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException($"Client with ID: {request.Id} not found");
+            var client = await _clientRepository.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException($"Client not found");
+
+            if (!_passwordHasher.VerifyPassword(request.Password, client.Password))
+            {
+                throw new UnauthorizedAccessException("Invalid credentials");
+            }
 
             if (request.Email != null && request.Email != client.Email)
             {
@@ -41,11 +47,6 @@ namespace Finnova.Application.Handlers.Clients
                 request.Email ?? client.Email,
                 request.Phone ?? client.Phone
             );
-
-            if (request.Password != null)
-            {
-                client.SetHashPassword(_passwordHasher.HashPassword(request.Password));
-            }
 
             _clientRepository.Update(client);
             await _unitOfWork.CommitAsync(cancellationToken);

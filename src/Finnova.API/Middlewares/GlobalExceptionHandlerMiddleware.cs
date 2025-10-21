@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Finnova.Application.Exceptions;
 using Finnova.Domain.Exceptions;
 
 namespace Finnova.API.Middlewares
@@ -47,6 +48,12 @@ namespace Finnova.API.Middlewares
                     statusCode = StatusCodes.Status401Unauthorized;
                     message = ex.Message;
                     break;
+
+                case NotFoundException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    message = ex.Message;
+                    break;
+                    
                 case DomainException:
                     statusCode = StatusCodes.Status400BadRequest;
                     message = ex.Message;

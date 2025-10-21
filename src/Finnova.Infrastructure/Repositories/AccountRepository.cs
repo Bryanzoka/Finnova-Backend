@@ -29,6 +29,11 @@ namespace Finnova.Infrastructure.Repositories
             return await _dbContext.Accounts.FirstOrDefaultAsync(a => a.ClientId == clientId);
         }
 
+        public async Task<IReadOnlyList<Account>?> GetAllByClientIdAsync(int clientId)
+        {
+            return await _dbContext.Accounts.Where(a => a.ClientId == clientId).ToListAsync();
+        }
+
         public async Task AddAsync(Account account)
         {
             await _dbContext.Accounts.AddAsync(account);

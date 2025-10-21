@@ -38,8 +38,10 @@ namespace Finnova.API.Controllers
             var clientDto = await _mediator.Send(query);
 
             if (clientDto == null)
+            {
                 return NotFound("Client not found");
-
+            }
+            
             return Ok(clientDto);
         }
 
@@ -52,7 +54,7 @@ namespace Finnova.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] CreateClientDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateClientDto dto)
         {
             var command = new CreateClientCommand
             {
