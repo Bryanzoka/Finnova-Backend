@@ -70,7 +70,7 @@ builder.Services.AddAuthentication(x =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt not configured"))),
             ClockSkew = TimeSpan.Zero
         };
     });
@@ -89,6 +89,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IClientUniquenessChecker, ClientUniquenessChecker>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 //FluentValidation 
 builder.Services.AddFluentValidationAutoValidation();

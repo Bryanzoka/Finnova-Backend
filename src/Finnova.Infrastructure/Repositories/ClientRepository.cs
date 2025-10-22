@@ -29,6 +29,11 @@ namespace Finnova.Infrastructure.Repositories
             return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Cpf == cpf);
         }
 
+        public async Task<Client?> GetByEmailAsync(string email)
+        {
+            return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Email == email);
+        }
+
         public async Task AddAsync(Client client)
         {
             await _dbContext.Clients.AddAsync(client);

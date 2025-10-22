@@ -7,6 +7,7 @@ namespace FinnovaAPI.Repositories
         Task<List<Client>> GetAllAsync();
         Task<Client?> GetByIdAsync(int id);
         Task<Client?> GetByCpfAsync(string cpf);
+        Task<Client?> GetByEmailAsync(string email);
         Task AddAsync(Client client);
         void Update(Client client);
         void Delete(Client client);
