@@ -66,11 +66,10 @@ namespace Finnova.API.Middlewares
 
             
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.StatusCode = statusCode;
 
             var response = new
             {
-                statusCode,
                 message
             };
 
