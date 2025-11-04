@@ -75,6 +75,18 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+//CORS configuration to test in container
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
@@ -99,6 +111,20 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateClientCommandValidato
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FinnovaDbContext>();
+
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Failed to apply database migrations: {ex.Message}");
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {

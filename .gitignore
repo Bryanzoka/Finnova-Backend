@@ -11,3 +11,4 @@ obj/
 bin/
 .vs
 .vscode
+.env

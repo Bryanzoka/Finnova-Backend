@@ -7,6 +7,6 @@ namespace Finnova.Application.DTOs.Accounts
         int ClientId,
         AccountType Type,
         string Password,
-        [property: JsonPropertyName("password_confirmation")]string PasswordConfirmation
+        [property: JsonPropertyName("password_confirmation")] string PasswordConfirmation
     );
 }

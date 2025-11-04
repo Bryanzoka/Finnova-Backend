@@ -53,7 +53,7 @@ namespace Finnova.API.Controllers
                 ClientId = dto.ClientId,
                 Type = dto.Type,
                 Password = dto.Password,
-                Password_confirmation = dto.Password_confirmation
+                PasswordConfirmation = dto.PasswordConfirmation
             };
 
             int newAccountId = await _mediator.Send(command);

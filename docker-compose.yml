@@ -1,0 +1,35 @@
+services:
+  finnova.api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: finnova_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=${MYSQL_DATABASE};user=root;password=${MYSQL_PASSWORD}
+
+  mysql:
+    image: mysql:8.0
+    container_name: finnova_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  mysql_data:
