@@ -45,14 +45,6 @@ namespace Finnova.API.Controllers
             return Ok(clientDto);
         }
 
-        [HttpPost("request")]
-        public async Task<IActionResult> RequestVerificationCode([FromBody] RequestVerificationCodeDto dto)
-        {
-            var command = new RequestVerificationCodeCommand { Email = dto.Email };
-            await _mediator.Send(command);
-            return NoContent();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateClientDto dto)
         {
@@ -63,7 +55,7 @@ namespace Finnova.API.Controllers
                 Email = dto.Email,
                 Phone = dto.Phone,
                 Password = dto.Password,
-                Password_confirmation = dto.Password_confirmation,
+                PasswordConfirmation = dto.PasswordConfirmation,
                 Code = dto.Code
             };
 

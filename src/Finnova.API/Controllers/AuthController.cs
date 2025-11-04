@@ -29,5 +29,13 @@ namespace Finnova.API.Controllers
 
             return Ok(new { token });
         }
+
+        [HttpPost("request-verification-code")]
+        public async Task<IActionResult> RequestVerificationCode([FromBody] RequestVerificationCodeDto dto)
+        {
+            var command = new RequestVerificationCodeCommand { Email = dto.Email };
+            await _mediator.Send(command);
+            return NoContent();
+        }
     }
 }

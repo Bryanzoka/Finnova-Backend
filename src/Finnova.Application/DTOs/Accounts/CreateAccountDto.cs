@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Finnova.Domain.ValueObjects;
 
 namespace Finnova.Application.DTOs.Accounts
@@ -6,6 +7,6 @@ namespace Finnova.Application.DTOs.Accounts
         int ClientId,
         AccountType Type,
         string Password,
-        string Password_confirmation
+        [property: JsonPropertyName("password_confirmation")]string PasswordConfirmation
     );
 }

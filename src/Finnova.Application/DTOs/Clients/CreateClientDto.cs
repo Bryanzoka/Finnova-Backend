@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Finnova.Application.DTOs.Clients
 {
     public record CreateClientDto(
@@ -6,7 +8,7 @@ namespace Finnova.Application.DTOs.Clients
         string Email,
         string Phone,
         string Password,
-        string Password_confirmation,
+        [property: JsonPropertyName("password_confirmation")]string PasswordConfirmation,
         string Code
     );
 }

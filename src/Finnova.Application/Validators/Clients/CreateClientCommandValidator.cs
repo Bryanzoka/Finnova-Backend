@@ -32,7 +32,7 @@ namespace Finnova.Application.Validators.Clients
                 .Matches(@"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$")
                 .WithMessage("Password must have at least 1 uppercase letter, 1 number, and 1 symbol");
 
-            RuleFor(x => x.Password_confirmation)
+            RuleFor(x => x.PasswordConfirmation)
                 .Equal(x => x.Password).WithMessage("Password confirmation does not match the password");
 
 
