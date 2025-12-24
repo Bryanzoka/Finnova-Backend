@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Finnova.Application.Queries.Accounts
 {
-    public class GetAllAccountsQuery : IRequest<List<AccountDto>?>
+    public class GetAllAccountsQuery : IRequest<List<AccountDto?>>
     {
         
     }

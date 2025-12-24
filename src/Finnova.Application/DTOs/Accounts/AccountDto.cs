@@ -1,12 +1,13 @@
-using Finnova.Domain.ValueObjects;
+using System.Text.Json.Serialization;
+using Finnova.Domain.Enums;
 
 namespace Finnova.Application.DTOs.Accounts
 {
     public record AccountDto(
         int Id,
-        int ClientId,
+        [property: JsonPropertyName("user_id")] int UserId,
+        string Name,
         AccountType Type,
-        AccountStatus Status,
         decimal Balance
     );
 }

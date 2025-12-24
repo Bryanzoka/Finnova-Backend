@@ -1,4 +1,4 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 using Finnova.Domain.Repositories;
 using Finnova.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

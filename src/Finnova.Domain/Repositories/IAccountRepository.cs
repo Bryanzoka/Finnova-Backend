@@ -1,4 +1,4 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 
 namespace Finnova.Domain.Repositories
 {
@@ -6,8 +6,8 @@ namespace Finnova.Domain.Repositories
     {
         Task<List<Account>?> GetAllAsync();
         Task<Account?> GetByIdAsync(int id);
-        Task<Account?> GetByClientIdAsync(int clientId);
-        Task<IReadOnlyList<Account>?> GetAllByClientIdAsync(int clientId);
+        Task<Account?> GetByUserIdAsync(int userId);
+        Task<List<Account>?> GetAllByUserIdAsync(int userId);
         Task AddAsync(Account account);
         void Update(Account account);
         void Delete(Account account);

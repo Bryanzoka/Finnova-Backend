@@ -1,4 +1,4 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,35 +17,26 @@ namespace Finnova.Infrastructure.Persistence.Configurations
                 .HasColumnName("id");
 
             builder
-                .Property(a => a.ClientId)
+                .Property(a => a.UserId)
                 .IsRequired()
-                .HasColumnName("client_id");
+                .HasColumnName("user_id");
 
             builder
                 .Property(a => a.Type)
                 .IsRequired()
-                .HasConversion<string>()
-                .HasColumnType("VARCHAR(20)")
+                .HasConversion<int>()
                 .HasColumnName("type");
 
             builder
-                .Property(a => a.Status)
+                .Property(a => a.IsActive)
                 .IsRequired()
-                .HasConversion<string>()
-                .HasColumnType("VARCHAR(20)")
-                .HasColumnName("status");
+                .HasColumnName("is_active");
 
             builder
                 .Property(a => a.Balance)
                 .IsRequired()
-                .HasColumnType("DECIMAL(12,2)")
+                .HasColumnType("DECIMAL(18,2)")
                 .HasColumnName("balance");
-
-            builder
-                .Property(a => a.Password)
-                .IsRequired()
-                .HasColumnType("VARCHAR(255)")
-                .HasColumnName("password");
 
             builder
                 .Property(a => a.CreatedAt)
@@ -57,20 +48,15 @@ namespace Finnova.Infrastructure.Persistence.Configurations
                 .HasColumnName("updated_at");
 
             builder
-                .Property(a => a.ClientId)
-                .HasColumnName("client_id");
+                .Property(a => a.UserId)
+                .HasColumnName("user_id");
 
             builder
-                .HasIndex(a => new { a.ClientId, a.Type })
-                .IsUnique();
-
-            builder
-                .HasOne<Client>()
+                .HasOne<User>()
                 .WithMany()
-                .HasForeignKey(a => a.ClientId)
+                .HasForeignKey(a => a.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

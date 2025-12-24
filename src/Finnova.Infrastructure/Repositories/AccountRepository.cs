@@ -1,4 +1,4 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 using Finnova.Domain.Repositories;
 using Finnova.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -24,14 +24,14 @@ namespace Finnova.Infrastructure.Repositories
             return await _dbContext.Accounts.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<Account?> GetByClientIdAsync(int clientId)
+        public async Task<Account?> GetByUserIdAsync(int userId)
         {
-            return await _dbContext.Accounts.FirstOrDefaultAsync(a => a.ClientId == clientId);
+            return await _dbContext.Accounts.FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
-        public async Task<IReadOnlyList<Account>?> GetAllByClientIdAsync(int clientId)
+        public async Task<List<Account>?> GetAllByUserIdAsync(int userId)
         {
-            return await _dbContext.Accounts.Where(a => a.ClientId == clientId).ToListAsync();
+            return await _dbContext.Accounts.Where(a => a.UserId == userId).ToListAsync();
         }
 
         public async Task AddAsync(Account account)

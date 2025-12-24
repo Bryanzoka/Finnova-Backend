@@ -1,14 +1,12 @@
-using System.Text.Json.Serialization;
-using Finnova.Domain.ValueObjects;
+using Finnova.Domain.Enums;
 using MediatR;
 
 namespace Finnova.Application.Commands.Accounts
 {
     public class CreateAccountCommand : IRequest<int>
     {
-        public required int ClientId { get; set; }
+        public required int UserId { get; set; }
+        public required string Name { get; set; }
         public required AccountType Type { get; set; }
-        public required string Password { get; set; }
-        public required string PasswordConfirmation { get; set; }
     }
 }

@@ -59,6 +59,11 @@ namespace Finnova.API.Middlewares
                     message = ex.Message;
                     break;
 
+                case ForbiddenException:
+                    statusCode = StatusCodes.Status403Forbidden;
+                    message = ex.Message;
+                    break;
+
                 default:
                     _logger.LogError(ex, $"unexpected error: {ex.Message}");
                     break;

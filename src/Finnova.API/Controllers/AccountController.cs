@@ -1,5 +1,4 @@
 using Finnova.Application.Commands.Accounts;
-using Finnova.Application.DTOs.Accounts;
 using Finnova.Application.Queries.Accounts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Finnova.API.Controllers
 {
     [ApiController]
-    [Route("api/account")]
+    [Route("api/accounts")]
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,7 +24,7 @@ namespace Finnova.API.Controllers
 
             if (accounts == null)
             {
-                return NotFound("Accounts not found");
+                return NotFound("accounts not found");
             }
 
             return Ok(accounts);
@@ -39,7 +38,7 @@ namespace Finnova.API.Controllers
 
             if (account == null)
             {
-                return NotFound("Account not found");
+                return NotFound("account not found");
             }
 
             return Ok(account);
@@ -50,10 +49,9 @@ namespace Finnova.API.Controllers
         {
             var command = new CreateAccountCommand
             {
-                ClientId = dto.ClientId,
-                Type = dto.Type,
-                Password = dto.Password,
-                PasswordConfirmation = dto.PasswordConfirmation
+                UserId = dto.UserId,
+                Name = dto.Name,
+                Type = dto.Type
             };
 
             int newAccountId = await _mediator.Send(command);

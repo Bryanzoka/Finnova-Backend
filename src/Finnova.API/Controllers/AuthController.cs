@@ -1,5 +1,5 @@
-using Finnova.Application.Commands.Clients;
-using Finnova.Application.DTOs.Clients;
+using Finnova.Application.Commands.Users;
+using Finnova.Application.DTOs.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +17,9 @@ namespace Finnova.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginClientDto dto)
+        public async Task<IActionResult> Login(LoginUserDto dto)
         {
-            var command = new LoginClientCommand
+            var command = new LoginUserCommand
             {
                 Email = dto.Email,
                 Password = dto.Password

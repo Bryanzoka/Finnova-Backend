@@ -1,4 +1,4 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 
 namespace Finnova.Domain.Repositories
 {

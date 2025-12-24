@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using FinnovaAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,14 +11,15 @@ using Finnova.Application.Contracts;
 using Finnova.Infrastructure.Services;
 using Finnova.Infrastructure.Persistence;
 using FluentValidation.AspNetCore;
-using Finnova.Application.Validators.Clients;
+using Finnova.Application.Validators.Users;
 using FluentValidation;
-using Finnova.Domain.Services;
 using Finnova.API.Middlewares;
+using FinnovaAPI.Repositories;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<FinnovaDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<FinnovaDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Finnova",
         Version = "1.0",
-        Description = "Uma web API para gerenciamento de finanças bancárias."
+        Description = "API para gerenciamento financeiro."
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -89,23 +89,22 @@ builder.Services.AddCors(options =>
 
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
-builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
+builder.Services.AddMediatR(typeof(AssemblyReference).Assembly);
 builder.Services.AddControllers();
 
 //Repository dependency injection
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 
 //Service dependency injection
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IClientUniquenessChecker, ClientUniquenessChecker>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 //FluentValidation 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateClientCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 
 //Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -122,7 +121,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Failed to apply database migrations: {ex.Message}");
+        Console.WriteLine($"failed to apply database migrations: {ex.Message}");
     }
 }
 

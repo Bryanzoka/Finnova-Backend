@@ -1,6 +1,7 @@
-using Finnova.Domain.Aggregates;
+using Finnova.Domain.Entities;
 using Finnova.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Finnova.Infrastructure.Persistence
 {
@@ -11,13 +12,13 @@ namespace Finnova.Infrastructure.Persistence
 
         }
 
-        public DbSet<Client> Clients { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<VerificationCode> VerificationCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new VerificationCodeConfiguration());
             

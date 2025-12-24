@@ -1,12 +1,8 @@
 using System.Text.Json.Serialization;
-using Finnova.Domain.ValueObjects;
+using Finnova.Domain.Enums;
 
-namespace Finnova.Application.DTOs.Accounts
-{
-    public record CreateAccountDto(
-        int ClientId,
-        AccountType Type,
-        string Password,
-        [property: JsonPropertyName("password_confirmation")] string PasswordConfirmation
-    );
-}
+public record CreateAccountDto(
+    [property: JsonPropertyName("user_id")] int UserId,
+    string Name,
+    AccountType Type 
+);
