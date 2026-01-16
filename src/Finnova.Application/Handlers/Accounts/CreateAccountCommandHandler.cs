@@ -3,7 +3,6 @@ using Finnova.Application.Contracts;
 using Finnova.Application.Exceptions;
 using Finnova.Domain.Entities;
 using Finnova.Domain.Repositories;
-using FinnovaAPI.Repositories;
 using MediatR;
 
 namespace Finnova.Application.Handlers.Users.Accounts

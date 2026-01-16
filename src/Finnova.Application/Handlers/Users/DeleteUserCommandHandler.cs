@@ -1,6 +1,6 @@
 using Finnova.Application.Commands.Users;
 using Finnova.Application.Contracts;
-using FinnovaAPI.Repositories;
+using Finnova.Domain.Repositories;
 using MediatR;
 
 namespace Finnova.Application.Handlers.Users

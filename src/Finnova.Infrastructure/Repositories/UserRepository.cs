@@ -1,6 +1,6 @@
 using Finnova.Domain.Entities;
 using Finnova.Infrastructure.Persistence;
-using FinnovaAPI.Repositories;
+using Finnova.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Finnova.Infrastructure.Repositories

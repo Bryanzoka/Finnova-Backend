@@ -1,7 +1,7 @@
 using Finnova.Application.Commands.Users;
 using Finnova.Application.Contracts;
 using Finnova.Application.Exceptions;
-using FinnovaAPI.Repositories;
+using Finnova.Domain.Repositories;
 using MediatR;
 
 namespace Finnova.Application.Handlers.Users
@@ -22,14 +22,14 @@ namespace Finnova.Application.Handlers.Users
         
         public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-            var client = await _userRepository.GetByEmailAsync(request.Email) ?? throw new NotFoundException("user not found");
+            var user = await _userRepository.GetByEmailAsync(request.Email) ?? throw new NotFoundException("user not found");
 
-            if (!_passwordHasher.VerifyPassword(request.Password, client.Password))
+            if (!_passwordHasher.VerifyPassword(request.Password, user.Password))
             {
                 throw new UnauthorizedAccessException("invalid credentials");
             }
 
-            return _tokenService.GenerateToken(client.Id, client.Email, "User");
+            return _tokenService.GenerateToken(user.Id, user.Email, "User");
         }
     }
 }

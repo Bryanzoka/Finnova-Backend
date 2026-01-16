@@ -1,4 +1,5 @@
 using Finnova.Application.Commands.Accounts;
+using Finnova.Application.DTOs.Accounts;
 using Finnova.Application.Queries.Accounts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,18 @@ namespace Finnova.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("/api/users/{id}/accounts")]
+        public async Task<IActionResult> GetAll(int id, [FromQuery] AccountFilter filter)
         {
-            var query = new GetAllAccountsQuery();
+            var query = new GetAllAccountsQuery
+            {
+                Id = id,
+                IsActive = filter.IsActive,
+                Type = filter.Type,
+                MinBalance = filter.MinBalance,
+                MaxBalance = filter.MaxBalance
+            };
+
             var accounts = await _mediator.Send(query);
 
             if (accounts == null)
@@ -57,6 +66,32 @@ namespace Finnova.API.Controllers
             int newAccountId = await _mediator.Send(command);
 
             return CreatedAtAction(nameof(GetById), new { id = newAccountId }, null);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountDto dto)
+        {
+            var command = new UpdateAccountCommand
+            {
+                Id = id,
+                Name = dto.Name,
+                Type = dto.Type,
+                IsActive = dto.IsActive
+            };
+
+            await _mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var command = new DeleteAccountCommand { Id = id };
+
+            await _mediator.Send(command);
+
+            return NoContent();
         }
     }
 }

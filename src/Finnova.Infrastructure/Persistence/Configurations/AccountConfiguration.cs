@@ -22,6 +22,12 @@ namespace Finnova.Infrastructure.Persistence.Configurations
                 .HasColumnName("user_id");
 
             builder
+                .Property(a => a.Name)
+                .IsRequired()
+                .HasMaxLength(150)
+                .HasColumnName("name");
+
+            builder
                 .Property(a => a.Type)
                 .IsRequired()
                 .HasConversion<int>()
@@ -46,10 +52,6 @@ namespace Finnova.Infrastructure.Persistence.Configurations
             builder
                 .Property(a => a.UpdatedAt)
                 .HasColumnName("updated_at");
-
-            builder
-                .Property(a => a.UserId)
-                .HasColumnName("user_id");
 
             builder
                 .HasOne<User>()

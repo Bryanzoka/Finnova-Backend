@@ -16,7 +16,7 @@ namespace Finnova.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(int clientId, string email, string role)
+        public string GenerateToken(int userId, string email, string role)
         {
             var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("key jwt not configured");
             var issuer = _configuration["Jwt:Issuer"];
@@ -24,9 +24,9 @@ namespace Finnova.Infrastructure.Services
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, clientId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -36,7 +36,7 @@ namespace Finnova.Infrastructure.Services
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: credentials
             );
 

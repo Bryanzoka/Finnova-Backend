@@ -14,7 +14,6 @@ using FluentValidation.AspNetCore;
 using Finnova.Application.Validators.Users;
 using FluentValidation;
 using Finnova.API.Middlewares;
-using FinnovaAPI.Repositories;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,16 +90,19 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 
 builder.Services.AddMediatR(typeof(AssemblyReference).Assembly);
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 //Repository dependency injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 
 //Service dependency injection
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 //FluentValidation 
 builder.Services.AddFluentValidationAutoValidation();

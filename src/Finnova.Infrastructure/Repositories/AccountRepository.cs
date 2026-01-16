@@ -1,4 +1,5 @@
 using Finnova.Domain.Entities;
+using Finnova.Domain.Enums;
 using Finnova.Domain.Repositories;
 using Finnova.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +30,31 @@ namespace Finnova.Infrastructure.Repositories
             return await _dbContext.Accounts.FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
-        public async Task<List<Account>?> GetAllByUserIdAsync(int userId)
+        public async Task<List<Account>?> GetAllByUserIdAsync(int userId, bool? isActive, AccountType? type, decimal? minBalance, decimal? maxBalance)
         {
-            return await _dbContext.Accounts.Where(a => a.UserId == userId).ToListAsync();
+            var accounts = _dbContext.Accounts.AsQueryable().Where(a => a.UserId == userId);
+
+            if (isActive.HasValue)
+            {
+                accounts = accounts.Where(a => a.IsActive == isActive);
+            }
+
+            if (type.HasValue)
+            {
+                accounts = accounts.Where(a => a.Type == type);
+            }
+
+            if (minBalance.HasValue)
+            {
+                accounts = accounts.Where(a => a.Balance >= minBalance);
+            }
+
+            if (maxBalance.HasValue)
+            {
+                accounts = accounts.Where(a => a.Balance <= maxBalance);
+            }
+
+            return await accounts.ToListAsync();
         }
 
         public async Task AddAsync(Account account)

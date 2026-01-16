@@ -35,7 +35,7 @@ namespace Finnova.Domain.Entities
             return new Account(userId, name, type);
         }
 
-        public void Update(string name)
+        public void Update(string name, AccountType type, bool isActive)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -43,7 +43,43 @@ namespace Finnova.Domain.Entities
             }
 
             Name = name;
+            Type = type;
+            IsActive = isActive;
             UpdatedAt = DateTime.UtcNow; 
+        }
+
+        public void ApplyTransaction(decimal amount, TransactionType type)
+        {
+            if (!IsActive)
+            {
+                throw new DomainException("this account is inactive");
+            }
+
+            if (amount <= 0m)
+            {
+                throw new DomainException("amount must be greater than zero");
+            }
+            
+            switch (type)
+            {
+                case TransactionType.Income:
+                    Balance += amount;
+                    break;
+
+                case TransactionType.Expense:
+                    if (Balance < amount)
+                    {
+                        throw new InsufficientBalanceException("insufficient balance");
+                    }
+
+                    Balance -= amount;
+                    break;
+
+                default:
+                    throw new DomainException("invalid transaction type");
+            }
+
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

@@ -1,6 +1,6 @@
 using Finnova.Domain.Entities;
 
-namespace FinnovaAPI.Repositories
+namespace Finnova.Domain.Repositories
 {
     public interface IUserRepository
     {

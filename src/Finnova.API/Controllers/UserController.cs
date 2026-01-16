@@ -81,6 +81,7 @@ namespace Finnova.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var command = new DeleteUserCommand { Id = id };
+            
             await _mediator.Send(command);
 
             return NoContent();

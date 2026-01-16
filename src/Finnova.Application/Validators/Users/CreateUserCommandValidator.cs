@@ -25,7 +25,6 @@ namespace Finnova.Application.Validators.Users
             RuleFor(x => x.PasswordConfirmation)
                 .Equal(x => x.Password).WithMessage("Password confirmation does not match the password");
 
-
             RuleFor(x => x.Code)
                 .NotEmpty().WithMessage("Verification code is required")
                 .Length(6).WithMessage("Code must have exactly 6 digits")
