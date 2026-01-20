@@ -2,6 +2,7 @@ using Finnova.Application.Commands.Accounts;
 using Finnova.Application.DTOs.Accounts;
 using Finnova.Application.Queries.Accounts;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finnova.API.Controllers
@@ -17,10 +18,11 @@ namespace Finnova.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet("/api/users/{id}/accounts")]
         public async Task<IActionResult> GetAll(int id, [FromQuery] AccountFilter filter)
         {
-            var query = new GetAllAccountsQuery
+            var query = new GetAllAccountsByUserIdQuery
             {
                 Id = id,
                 IsActive = filter.IsActive,
@@ -39,6 +41,7 @@ namespace Finnova.API.Controllers
             return Ok(accounts);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -53,6 +56,7 @@ namespace Finnova.API.Controllers
             return Ok(account);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAccountDto dto)
         {
@@ -68,6 +72,7 @@ namespace Finnova.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newAccountId }, null);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountDto dto)
         {
@@ -84,6 +89,7 @@ namespace Finnova.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

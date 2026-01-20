@@ -49,7 +49,7 @@ namespace Finnova.Infrastructure.Repositories
                 transactions = transactions.Where(t => t.Date >= startDate);
             }
 
-            if (startDate.HasValue)
+            if (endDate.HasValue)
             {
                 transactions = transactions.Where(t => t.Date <= endDate);
             }
@@ -81,7 +81,7 @@ namespace Finnova.Infrastructure.Repositories
                 transactions = transactions.Where(t => t.Date >= startDate);
             }
 
-            if (startDate.HasValue)
+            if (endDate.HasValue)
             {
                 transactions = transactions.Where(t => t.Date <= endDate);
             }

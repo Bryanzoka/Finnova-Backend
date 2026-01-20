@@ -3,6 +3,7 @@ using MediatR;
 using Finnova.Application.Commands.Users;
 using Finnova.Application.DTOs.Users;
 using Finnova.Application.Queries.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Finnova.API.Controllers
 {
@@ -31,6 +32,7 @@ namespace Finnova.API.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -58,9 +60,11 @@ namespace Finnova.API.Controllers
             };
 
             var newUserId = await _mediator.Send(command);
+            
             return CreatedAtAction(nameof(GetById), new { id = newUserId }, null);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
         {
@@ -77,6 +81,7 @@ namespace Finnova.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -7,18 +7,18 @@ using MediatR;
 
 namespace Finnova.Application.Handlers.Accounts
 {
-    public class GetAllAccountsQueryHandler : IRequestHandler<GetAllAccountsQuery, List<AccountDto>?>
+    public class GetAllAccountsByUserIdQueryHandler : IRequestHandler<GetAllAccountsByUserIdQuery, List<AccountDto>?>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IUserContext _userContext;
 
-        public GetAllAccountsQueryHandler(IAccountRepository accountRepository, IUserContext userContext)
+        public GetAllAccountsByUserIdQueryHandler(IAccountRepository accountRepository, IUserContext userContext)
         {
             _accountRepository = accountRepository;
             _userContext = userContext;
         }
 
-        public async Task<List<AccountDto>?> Handle(GetAllAccountsQuery request, CancellationToken cancellationToken)
+        public async Task<List<AccountDto>?> Handle(GetAllAccountsByUserIdQuery request, CancellationToken cancellationToken)
         {
             if (request.Id != _userContext.UserId)
             {

@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Finnova.Application.Contracts;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ namespace Finnova.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(int userId, string email, string role)
+        public string GenerateAccessToken(int userId, string role)
         {
             var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("key jwt not configured");
             var issuer = _configuration["Jwt:Issuer"];
@@ -41,6 +42,17 @@ namespace Finnova.Infrastructure.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var bytes = new byte[64];
+            RandomNumberGenerator.Fill(bytes);
+
+            return Convert.ToBase64String(bytes)
+                .Replace("+", "-")
+                .Replace("/", "_")
+                .Replace("=", "");
         }
     }
 }

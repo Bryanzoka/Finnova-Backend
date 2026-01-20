@@ -2,6 +2,7 @@ using Finnova.Application.Commands.Transactions;
 using Finnova.Application.DTOs.Transactions;
 using Finnova.Application.Queries.Transactions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finnova.API.Controllers
@@ -17,6 +18,7 @@ namespace Finnova.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet("/api/accounts/{id}/transactions")]
         public async Task<IActionResult> GetByAccount(int id, [FromQuery] TransactionFilter filter)
         {
@@ -35,6 +37,7 @@ namespace Finnova.API.Controllers
             return Ok(transactions);
         }
 
+        [Authorize]
         [HttpGet("/api/users/{id}/transactions")]
         public async Task<IActionResult> GetByUser(int id, [FromQuery] TransactionFilter filter)
         {
@@ -53,6 +56,7 @@ namespace Finnova.API.Controllers
             return Ok(transactions);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -63,6 +67,7 @@ namespace Finnova.API.Controllers
             return Ok(transaction);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTransactionDto dto)
         {
