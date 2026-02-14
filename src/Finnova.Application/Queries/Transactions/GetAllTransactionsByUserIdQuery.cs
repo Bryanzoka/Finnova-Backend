@@ -6,7 +6,7 @@ namespace Finnova.Application.Queries.Transactions
 {
     public class GetAllTransactionsByUserIdQuery : IRequest<List<TransactionDto>?>
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
         public TransactionType? Type { get; set; }
         public decimal? MinAmount { get; set; }
         public decimal? MaxAmount { get; set; }

@@ -31,7 +31,7 @@ namespace Finnova.Application.Handlers.Transactions
                 throw new ForbiddenException("unauthorized access");
             }
 
-            var transaction = Transaction.Create(request.AccountId, request.Amount, request.Type, request.Description, request.Date);
+            var transaction = Transaction.Create(request.AccountId, request.Amount, request.Type, request.Description, DateTime.SpecifyKind(request.Date, DateTimeKind.Utc));
 
             account.ApplyTransaction(request.Amount, request.Type);
             

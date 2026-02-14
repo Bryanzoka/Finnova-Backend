@@ -25,7 +25,9 @@ namespace Finnova.Application.Handlers.Clients
         public async Task<Unit> Handle(RequestVerificationCodeCommand request, CancellationToken cancellationToken)
         {
             if (await _userRepository.EmailExistsAsync(request.Email))
+            {
                 throw new InvalidOperationException("user with this email already exists");
+            }
 
             var verificationCode = VerificationCode.Create(request.Email);
 
@@ -40,8 +42,7 @@ namespace Finnova.Application.Handlers.Clients
 
             await _unitOfWork.CommitAsync(cancellationToken);
 
-            await _emailService.SendEmailAsync(request.Email, "Finnova Bank verification code",
-                $"Your verification code is {verificationCode.Code} and expires in 5 minutes");
+            await _emailService.SendEmailAsync(request.Email, "Finnova Bank verification code", $"Your verification code is {verificationCode.Code} and expires in 5 minutes");
 
             return Unit.Value;
         }

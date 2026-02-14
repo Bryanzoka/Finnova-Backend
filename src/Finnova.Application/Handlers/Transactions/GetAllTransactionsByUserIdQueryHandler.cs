@@ -19,12 +19,22 @@ namespace Finnova.Application.Handlers.Transactions
         }
         public async Task<List<TransactionDto>?> Handle(GetAllTransactionsByUserIdQuery request, CancellationToken cancellationToken)
         {
-            if (request.Id != _userContext.UserId)
+            if (request.UserId != _userContext.UserId)
             {
                 throw new ForbiddenException("unauthorized access");
             }
 
-            var transactions = await _transactionRepository.GetAllByUserIdAsync(request.Id, request.Type, request.MinAmount, request.MaxAmount, request.StartDate, request.EndDate);
+            if (request.StartDate.HasValue)
+            {
+                request.StartDate = DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Utc);
+            }
+
+            if (request.EndDate.HasValue)
+            {
+                request.EndDate = DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Utc);
+            }
+
+            var transactions = await _transactionRepository.GetAllByUserIdAsync(request.UserId, request.Type, request.MinAmount, request.MaxAmount, request.StartDate, request.EndDate);
 
             if (transactions == null)
             {

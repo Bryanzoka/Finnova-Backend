@@ -1,3 +1,4 @@
+using Finnova.Application.Contracts;
 using Finnova.Application.DTOs.Accounts;
 using Finnova.Application.Exceptions;
 using Finnova.Application.Queries.Accounts;
@@ -9,10 +10,12 @@ namespace Finnova.Application.Handlers.Users.Accounts
     public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDto?>
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IUserContext _userContext;
 
-        public GetAccountByIdQueryHandler(IAccountRepository accountRepository)
+        public GetAccountByIdQueryHandler(IAccountRepository accountRepository, IUserContext userContext)
         {
-            _accountRepository = accountRepository;    
+            _accountRepository = accountRepository;
+            _userContext = userContext;
         }
 
         public async Task<AccountDto?> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
@@ -24,7 +27,7 @@ namespace Finnova.Application.Handlers.Users.Accounts
                 return null;
             }
 
-            if (account.UserId != request.TokenId)
+            if (account.UserId != _userContext.UserId)
             {
                 throw new ForbiddenException("you are not authorized to acess this account");
             }

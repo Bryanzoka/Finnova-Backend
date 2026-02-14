@@ -15,6 +15,7 @@ using Finnova.Application.Validators.Users;
 using FluentValidation;
 using Finnova.API.Middlewares;
 using MediatR;
+using Finnova.Application.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -108,6 +109,9 @@ builder.Services.AddScoped<IUserContext, UserContext>();
 //FluentValidation 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+
+//Behaviors
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 //Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

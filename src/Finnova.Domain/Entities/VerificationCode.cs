@@ -1,3 +1,5 @@
+using Finnova.Domain.Exceptions;
+
 namespace Finnova.Domain.Entities
 {
     public class VerificationCode
@@ -17,7 +19,7 @@ namespace Finnova.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
             {
-                throw new ArgumentException("invalid email format", nameof(email));
+                throw new DomainException("invalid email format");
             }
 
             return new VerificationCode(email, new Random().Next(100000, 999999).ToString());
@@ -26,10 +28,10 @@ namespace Finnova.Domain.Entities
         public void Validate(string code)
         {
             if (Expiration < DateTime.UtcNow)
-                throw new InvalidOperationException("verification code has expired");
+                throw new InvalidDomainOperationException("verification code has expired");
 
             if (Code != code)
-                throw new UnauthorizedAccessException("invalid verification code");
+                throw new UnauthorizedDomainException("invalid verification code");
         }
     }
 }

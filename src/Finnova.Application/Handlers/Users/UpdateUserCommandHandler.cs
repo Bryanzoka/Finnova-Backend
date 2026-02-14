@@ -1,5 +1,6 @@
 using Finnova.Application.Commands.Users;
 using Finnova.Application.Contracts;
+using Finnova.Application.Exceptions;
 using Finnova.Domain.Repositories;
 using MediatR;
 
@@ -10,16 +11,23 @@ namespace Finnova.Application.Handlers.Users
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContext _userContext;
 
-        public UpdateClientCommandHandler(IUserRepository userRepository, IPasswordHasherService passwordHasher, IUnitOfWork unitOfWork)
+        public UpdateClientCommandHandler(IUserRepository userRepository, IPasswordHasherService passwordHasher, IUnitOfWork unitOfWork, IUserContext userContext)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _unitOfWork = unitOfWork;
+            _userContext = userContext;
         }
 
         public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
+            if (request.Id != _userContext.UserId)
+            {
+                throw new ForbiddenException("unauthorized access");
+            }
+            
             var user = await _userRepository.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException($"user not found");
 
             if (!_passwordHasher.VerifyPassword(request.Password, user.Password))

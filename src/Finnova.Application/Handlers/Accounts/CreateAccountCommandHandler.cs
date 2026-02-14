@@ -12,12 +12,14 @@ namespace Finnova.Application.Handlers.Users.Accounts
         private readonly IAccountRepository _accountRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContext _userContext;
 
-        public CreateAccountCommandHandler(IAccountRepository accountRepository, IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public CreateAccountCommandHandler(IAccountRepository accountRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, IUserContext userContext)
         {
             _accountRepository = accountRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _userContext = userContext;
         }
 
         public async Task<int> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -27,10 +29,15 @@ namespace Finnova.Application.Handlers.Users.Accounts
                 throw new NotFoundException("user not found");
             }
 
+            if (request.UserId != _userContext.UserId)
+            {
+                throw new ForbiddenException("invalid operation");
+            }
+
             var account = Account.Create(request.UserId, request.Name, request.Type);
 
             await _accountRepository.AddAsync(account);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(cancellationToken);
 
             return account.Id;
         }

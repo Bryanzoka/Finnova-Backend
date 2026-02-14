@@ -22,14 +22,24 @@ namespace Finnova.Application.Handlers.Transactions
 
         public async Task<List<TransactionDto>?> Handle(GetAllTransactionsByAccountIdQuery request, CancellationToken cancellationToken)
         {
-            var account = await _accountRepository.GetByIdAsync(request.Id) ?? throw new NotFoundException("account not found");
+            var account = await _accountRepository.GetByIdAsync(request.AccountId) ?? throw new NotFoundException("account not found");
 
             if (account.UserId != _userContext.UserId)
             {
                 throw new ForbiddenException("unauthorized access");
             }
 
-            var transactions = await _transactionRepository.GetAllByAccountIdAsync(request.Id, request.Type, request.MinAmount, request.MaxAmount, request.StartDate, request.EndDate);
+            if (request.StartDate.HasValue)
+            {
+                request.StartDate = DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Utc);
+            }
+
+            if (request.EndDate.HasValue)
+            {
+                request.EndDate = DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Utc);
+            }
+
+            var transactions = await _transactionRepository.GetAllByAccountIdAsync(request.AccountId, request.Type, request.MinAmount, request.MaxAmount, request.StartDate, request.EndDate);
 
             if (transactions == null)
             {

@@ -19,11 +19,11 @@ namespace Finnova.Application.Validators.Accounts
                 .When(a => a.Type.HasValue);
                 
             RuleFor(a => a.MinBalance)
-                .GreaterThan(0).WithMessage("minimum balance must be greater than zero")
+                .GreaterThan(0m).WithMessage("minimum balance must be greater than zero")
                 .When(a => a.MinBalance.HasValue);
 
             RuleFor(a => a.MaxBalance)
-                .GreaterThan(0).WithMessage("maximum balance must be greater than zero")
+                .GreaterThan(0m).WithMessage("maximum balance must be greater than zero")
                 .When(a => a.MaxBalance.HasValue);
         }
     }

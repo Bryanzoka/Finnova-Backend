@@ -36,7 +36,7 @@ namespace Finnova.API.Controllers
         {
             var command = new RefreshTokenCommand { RefreshToken = dto.RefreshToken };
 
-            var tokens = _mediator.Send(command);
+            var tokens = await _mediator.Send(command);
 
             return Ok(tokens);
         }

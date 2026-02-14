@@ -24,7 +24,7 @@ namespace Finnova.API.Controllers
         {
             var query = new GetAllTransactionsByAccountIdQuery
             {
-                Id = id,
+                AccountId = id,
                 Type = filter.Type,
                 MinAmount = filter.MinAmount,
                 MaxAmount = filter.MaxAmount,
@@ -43,7 +43,7 @@ namespace Finnova.API.Controllers
         {
             var query = new GetAllTransactionsByUserIdQuery
             {
-                Id = id,
+                UserId = id,
                 Type = filter.Type,
                 MinAmount = filter.MinAmount,
                 MaxAmount = filter.MaxAmount,

@@ -1,3 +1,5 @@
+using Finnova.Domain.Exceptions;
+
 namespace Finnova.Domain.Entities
 {
     public class User
@@ -22,17 +24,17 @@ namespace Finnova.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(name), "name cannot be empty");
+                throw new DomainException("name cannot be empty");
             }
 
             if (string.IsNullOrWhiteSpace(email) || !email.Contains('@') )
             {
-                throw new ArgumentException("invalid email format", nameof(email));
+                throw new DomainException("invalid email format");
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentNullException(nameof(password), "password is required");
+                throw new DomainException("password is required");
             }
 
             return new User(name, email, password);
@@ -42,17 +44,17 @@ namespace Finnova.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(name), "name cannot be empty");
+                throw new DomainException("name cannot be empty");
             }
             
             if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
             {
-                throw new ArgumentException("invalid email format", nameof(email));
+                throw new DomainException("invalid email format");
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentException("password hash is required.");
+                throw new DomainException("password is required.");
             }
 
             Name = name;
